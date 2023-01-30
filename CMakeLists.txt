@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.25.2)
+cmake_minimum_required(VERSION 3.20.2)
 project(FinalYearProject)
 set(CMAKE_CXX_STANDARD 17)
 find_package(OpenGL REQUIRED)
