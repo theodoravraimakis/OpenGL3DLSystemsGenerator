@@ -4,7 +4,7 @@ FetchContent_Declare(
     GIT_REPOSITORY https://github.com/ocornut/imgui.git
     GIT_TAG        d7c8516a4b848c0291e3d75b627c0843f515f591
 )
-FetchContent_MakeAvailable(imgui)
+FetchContent_Populate(imgui)
 # FetchContent_GetProperties(imgui)
 # if(NOT imgui_POPULATED)
 #   FetchContent_Populate(imgui)
@@ -42,3 +42,4 @@ target_include_directories(imgui
             # Backend-specific includes
             ${imgui_SOURCE_DIR}/backends/
         )
+        

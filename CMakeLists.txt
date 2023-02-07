@@ -1,9 +1,10 @@
-cmake_minimum_required(VERSION 3.20.2)
+cmake_minimum_required(VERSION 3.18)
 project(FinalYearProject)
 set(CMAKE_CXX_STANDARD 17)
-find_package(OpenGL REQUIRED)
+
 add_subdirectory(third_party/glad)
 add_subdirectory(third_party/dependencies)
+add_subdirectory(third_party/LearnOpenGL)
 
 include(FetchContent)
 FetchContent_Declare(
@@ -16,7 +17,23 @@ FetchContent_Declare(
     GIT_REPOSITORY https://github.com/glfw/glfw.git
     GIT_TAG        7482de6071d21db77a7236155da44c172a7f6c9e
 )
-FetchContent_MakeAvailable(glm glfw)
+FetchContent_Declare(
+    rapidobj
+    GIT_REPOSITORY https://github.com/guybrush77/rapidobj.git
+    GIT_TAG        bce0b3677c2f64002cc0aa3cd10b3bf5960f885b
+)
 
-add_executable(FinalYearProject main.cpp)
-target_link_libraries(FinalYearProject ${OPENGL_LIBRARIES} glm glfw glad imgui)
+FetchContent_MakeAvailable(glm glfw rapidobj)
+
+
+
+add_executable(FinalYearProject main.cpp scene.cpp)
+target_link_libraries(FinalYearProject glm glfw glad imgui rapidobj
+# cmake_modules 
+LOGL
+)
+
+# copy shaders
+add_custom_command(TARGET FinalYearProject PRE_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/shaders/ ${CMAKE_BINARY_DIR}/shaders)
