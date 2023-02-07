@@ -33,6 +33,8 @@ target_link_libraries(FinalYearProject glm glfw glad imgui rapidobj
 LOGL
 )
 
+file(MAKE_DIRECTORY ${CMAKE_SOURCE_DIR}/shaders)
+
 # copy shaders
 add_custom_command(TARGET FinalYearProject PRE_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory
