@@ -27,7 +27,7 @@ FetchContent_MakeAvailable(glm glfw rapidobj)
 
 
 
-add_executable(FinalYearProject main.cpp scene.cpp)
+add_executable(FinalYearProject main.cpp)
 target_link_libraries(FinalYearProject glm glfw glad imgui rapidobj
 # cmake_modules 
 LOGL
