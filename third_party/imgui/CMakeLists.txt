@@ -1,3 +1,6 @@
+cmake_minimum_required(VERSION 3.20.2)
+project(imgui)
+
 include(FetchContent)
 FetchContent_Declare(
     imgui
@@ -5,14 +8,7 @@ FetchContent_Declare(
     GIT_TAG        d7c8516a4b848c0291e3d75b627c0843f515f591
 )
 FetchContent_Populate(imgui)
-# FetchContent_GetProperties(imgui)
-# if(NOT imgui_POPULATED)
-#   FetchContent_Populate(imgui)
 
-#   add_library(imgui ${imgui_SOURCE_DIR}/imgui.cpp ${imgui_SOURCE_DIR}/imgui_draw.cpp ${imgui_SOURCE_DIR}/imgui_widgets.cpp)
-#   target_include_directories(imgui PUBLIC ${imgui_SOURCE_DIR})
-
-# endif()
 # https://github.com/MalteQuandt/physicsrenderer/blob/9d985799ba1298e622c3811c1492efff2bb9a8e0/lib/external/CMakeLists.txt
 add_library(imgui
         STATIC
