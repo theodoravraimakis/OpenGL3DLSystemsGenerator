@@ -50,6 +50,9 @@ private:
 
     glm::fvec2 m_lastCursorPos;
     glm::fvec2 m_currentCursorPos;
+
+    friend class UI;
+//    ArcballCamera* camera;
 };
 
 

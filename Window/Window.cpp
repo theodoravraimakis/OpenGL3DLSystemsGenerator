@@ -13,9 +13,9 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 }
 
 Window::Window(
-        int width,
-        int height,
-        const char* title
+//        int width,
+//        int height,
+//        const char* title
 ) {
     glfwInit();
 

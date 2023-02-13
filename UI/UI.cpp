@@ -3,16 +3,29 @@
 //
 
 #include "UI.h"
-//#include "ArcballCamera.h"
 
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 
 UI::UI(
-        const std::shared_ptr<Window>& window
+        const std::shared_ptr<Window>& window,
+        const std::shared_ptr<ArcballCamera>& camera,
+        const std::shared_ptr<Cylinder> &cylinder
+//        const std::shared_ptr<Shader>& shader
 )
 {
+
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO &io = ImGui::GetIO();
+    (void) io;
+
+    ImGui::StyleColorsDark();
+
+    ImGui_ImplGlfw_InitForOpenGL(window->get(), true);
+//    ImGui_ImplGlfw_InitForOpenGL(window, false);
+    ImGui_ImplOpenGL3_Init();
 
 };
 UI::~UI() {}
@@ -30,15 +43,15 @@ UI::~UI() {}
 ////    ImGui_ImplGlfw_InitForOpenGL(window, false);
 //    ImGui_ImplOpenGL3_Init();
 //}
-void UI::imguiDisplay()
+void UI::imguiDemo()
 {
     // temporary imgui vars
     bool show_demo_window = true;
     bool show_another_window = false;
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-    ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplGlfw_NewFrame();
-    ImGui::NewFrame();
+//    ImGui_ImplOpenGL3_NewFrame();
+//    ImGui_ImplGlfw_NewFrame();
+//    ImGui::NewFrame();
 
     // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
     if (show_demo_window)
@@ -76,58 +89,138 @@ void UI::imguiDisplay()
     }
 
 }
-void UI::imguiDraw()
+void UI::imguiDraw(const std::shared_ptr<ArcballCamera> &camera,
+                   const std::shared_ptr<Cylinder> &cylinder
+//                   const std::shared_ptr<Shader> &shader
+)
 {
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+
+//    imguiDemo();
+//    imguiCamera(camera);
+    imguiCylinder(
+            cylinder
+//            shader
+                  );
+
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
-void imguiDestroy()
+void UI::imguiDestroy()
 {
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
 }
 
-//void imguiCamera(ArcballCamera* camera)
-//{
-//    ImGui_ImplOpenGL3_NewFrame();
-//    ImGui_ImplGlfw_NewFrame();
-//    ImGui::NewFrame();
-////
-////    glm::vec3 pos = camera->getPositionV();
-////
-////    const std::string& name = "haha";
-////    const std::vector<std::string> sliderNames =
-////            {
-////                    "X##TRANSLATION::" + name,
-////                    "Y##TRANSLATION::" + name,
-////                    "Z##TRANSLATION::" + name
-////            };
-////    std::vector<float*> values =
-////            {
-////                    &pos.x,
-////                    &pos.y,
-////                    &pos.z
-////            };
-////    for (size_t i = 0; i < sliderNames.size(); i++)
-////    {
-////    ImGui::SliderFloat(
-////            sliderNames[i].c_str(),
-////            values[i],
-////            -10.0f,
-////            10.0f
-////    );}
-////    camera->setPos(pos);
+bool UI::isCursorPositionInGUI()
+{
+    ImGuiIO& io = ImGui::GetIO();
+
+    if (io.WantCaptureMouse)
+        return true;
+
+    return false;
+}
+
+bool UI::isClicked()
+{
+//    ImGuiIO& io = ImGui::GetIO();
+//    bool handled = false;
+//    handled = io.WantCaptureMouse;
+//io.AddMouseButtonEvent(0,true);
+    if (ImGui::IsMouseClicked(0, true))
+        return true;
+//        io.AddMouseButtonEvent(ImGuiMouseButton_Left, true);
+
+    return false;
+}
+
+void UI::imguiCamera(const std::shared_ptr<ArcballCamera> &camera)
+{
+
 //
-//    float f = arcCamera.FOV;
+//    glm::vec3 pos = camera->getPositionV();
+//
+//    const std::string& name = "haha";
+//    const std::vector<std::string> sliderNames =
+//            {
+//                    "X##TRANSLATION::" + name,
+//                    "Y##TRANSLATION::" + name,
+//                    "Z##TRANSLATION::" + name
+//            };
+//    std::vector<float*> values =
+//            {
+//                    &pos.x,
+//                    &pos.y,
+//                    &pos.z
+//            };
+//    for (size_t i = 0; i < sliderNames.size(); i++)
+//    {
 //    ImGui::SliderFloat(
-//            "dis",
-//            &f,
-//            -100.0f,
-//            100.0f
-//    );
-//    arcCamera.setFOV(f);
-//
+//            sliderNames[i].c_str(),
+//            values[i],
+//            -10.0f,
+//            10.0f
+//    );}
+//    camera->setPos(pos);
+
+    float f = camera->getFOV();
+    ImGui::SliderFloat(
+            "dis",
+            &f,
+            -100.0f,
+            100.0f
+    );
+    camera->setFOV(f);
+
 //    ImGui::Render();
 //    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+}
+
+void UI::imguiCylinder(
+        const std::shared_ptr<Cylinder> &cylinder
+//                       const std::shared_ptr<Shader> &shader
+)
+{
+
+        glm::vec3 c = cylinder->getColor();
+        ImGui::ColorEdit3(
+                "color",
+                (float *) &c
+        );
+    if(isCursorPositionInGUI() && isClicked()) {
+        std::cout << "true";
+        cylinder->setColor(c);
+    }
+
+
+//        Render::r(window, )
+//        reload();
+
+}
+//void UI::reload(const std::shared_ptr<Window>& window
+//                ,const std::shared_ptr<Shader> &shader
+//)
+//{
+//    Shader* s = static_cast<Shader*>(
+//            glfwGetWindowUserPointer(window->get())
+//    );
+////    auto pShader = std::dynamic_pointer_cast<Shader>(shader);
+//    if (glfwGetKey(window->get(), GLFW_KEY_R) == GLFW_PRESS)
+//    {
+//        try
+//        {
+//            s->reload();
+//            std::fprintf(stderr, "Shaders reloaded and recompiled.\n");
+//        }
+//        catch (std::exception const& eErr)
+//        {
+//            std::fprintf(stderr, "Error when reloading shader:\n");
+//            std::fprintf(stderr, "%s\n", eErr.what());
+//            std::fprintf(stderr, "Keeping old shader.\n");
+//        }
+//    }
 //}

@@ -10,22 +10,12 @@
 #include "GLFW/glfw3.h"
 #include "../Config.h"
 
-
-
-//const char* TITLE = "Generative Algorithms Toolkit";
-
 class Window {
 public:
-
-//    const unsigned int SCR_WIDTH = 800;
-//    const unsigned int SCR_HEIGHT = 600;
-//    int width = SCR_WIDTH;
-//    int height = SCR_HEIGHT;
-
     Window(
-            int width,
-            int height,
-            const char* title
+//            int width,
+//            int height,
+//            const char* title
     );
 
     ~Window();
@@ -51,6 +41,7 @@ private:
     // ImGui needs to access to non-const GLFWwindow.
     friend class UI;
     friend class ArcballCamera;
+    friend class Shader;
     GLFWwindow*  window;
 };
 

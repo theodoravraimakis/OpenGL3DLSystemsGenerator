@@ -9,21 +9,28 @@
 void Render::run()
 {
     m_window = std::make_shared<Window>(
-            Config::SCR_WIDTH,
-            Config::SCR_HEIGHT,
-            Config::TITLE
+//            Config::SCR_WIDTH,
+//            Config::SCR_HEIGHT,
+//            Config::TITLE
     );
-//    m_camera = std::make_shared<ArcballCamera>(
-//            m_window->get(),
-//            glm::vec3(0.0f, 0.0f, -3.0f),
-//            glm::vec3(0.0f),
-//            glm::radians(180.0f)
-//    );
     m_camera = std::make_shared<ArcballCamera>(
             m_window->get(),
             glm::fvec4(0.0f, 0.0f, 5.0f, 1.0f),
             glm::fvec4(0.0f),
             45.0f
+    );
+    std::vector<Shader::ShaderSource> s = {
+            { GL_VERTEX_SHADER, "../Shaders/camera.vert" },
+            { GL_FRAGMENT_SHADER, "../Shaders/camera.frag" }
+    };
+    m_shader = std::make_shared<Shader>(s);
+    m_cylinder = std::make_shared<Cylinder>();
+
+    m_UI = std::make_unique<UI>(
+            m_window,
+            m_camera,
+            m_cylinder
+//            m_shader
     );
 
     configureCallbacks();
@@ -61,9 +68,11 @@ void Render::configureCallbacks() {
     m_isMouseInMotion = false;
 
     glfwSetWindowUserPointer(m_window->get(), m_camera.get());
+    glfwSetWindowUserPointer(m_window->get(), m_shader.get());
 //    glfwSetMouseButtonCallback(m_window->get(), mouseButtonCallback);
 //    glfwSetCursorPosCallback(m_window->get(), mousePositionCallback);
     glfwSetScrollCallback(m_window->get(), scrollCallback);
+    glfwSetKeyCallback(m_window->get(), r);
 }
 
 void Render::scrollCallback(
@@ -82,7 +91,9 @@ void Render::scrollCallback(
 }
 
 void Render::handleInput() {
-//    m_window->pollEvents();
+    m_window->pollEvents();
+    if (m_UI->isCursorPositionInGUI())
+        return;
     if (glfwGetMouseButton(m_window->get(), GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
 
         auto pCamera = std::dynamic_pointer_cast<ArcballCamera>(m_camera);
@@ -110,126 +121,178 @@ void Render::handleInput() {
 void Render::mainLoop()
 {
 
-    Shader ourShader({
-                             { GL_VERTEX_SHADER, "../shaders/camera.vert" },
-                             { GL_FRAGMENT_SHADER, "../shaders/camera.frag" }
-                     });
+//    Shader ourShader({
+//                             { GL_VERTEX_SHADER, "../shaders/camera.vert" },
+//                             { GL_FRAGMENT_SHADER, "../shaders/camera.frag" }
+//                     });
 
-// set up vertex data (and buffer(s)) and configure vertex attributes
+
+//// set up vertex data (and buffer(s)) and configure vertex attributes
 // ------------------------------------------------------------------
-    float vertices[] = {
-            -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-            0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-            0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-            0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-            -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-            -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+//    float vertices[] = {
+//            -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+//            0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+//            0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+//            0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+//            -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+//            -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+//
+//            -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+//            0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+//            0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+//            0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+//            -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+//            -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+//
+//            -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+//            -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+//            -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+//            -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+//            -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+//            -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+//
+//            0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+//            0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+//            0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+//            0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+//            0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+//            0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+//
+//            -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+//            0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+//            0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+//            0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+//            -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+//            -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+//
+//            -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+//            0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+//            0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+//            0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+//            -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+//            -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+//    };
+//// world space positions of our cubes
+//    glm::vec3 cubePositions[] = {
+//            glm::vec3( 0.0f,  0.0f,  0.0f),
+//            glm::vec3( 2.0f,  5.0f, -15.0f),
+//            glm::vec3(-1.5f, -2.2f, -2.5f),
+//            glm::vec3(-3.8f, -2.0f, -12.3f),
+//            glm::vec3( 2.4f, -0.4f, -3.5f),
+//            glm::vec3(-1.7f,  3.0f, -7.5f),
+//            glm::vec3( 1.3f, -2.0f, -2.5f),
+//            glm::vec3( 1.5f,  2.0f, -2.5f),
+//            glm::vec3( 1.5f,  0.2f, -1.5f),
+//            glm::vec3(-1.3f,  1.0f, -1.5f)
+//    };
+//
+//    unsigned int VBO, VAO;
+//    glGenVertexArrays(1, &VAO);
+//    glGenBuffers(1, &VBO);
+//
+//    glBindVertexArray(VAO);
+//
+//    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+//    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+//
+//// position attribute
+//    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+//    glEnableVertexAttribArray(0);
+//// texture coord attribute
+//    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+//    glEnableVertexAttribArray(1);
 
-            -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-            0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-            0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-            0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-            -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-            -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-
-            -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-            -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-            -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-            -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-            -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-            -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-            0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-            0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-            0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-            0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-            0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-            0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-            -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-            0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-            0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-            0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-            -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-            -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-
-            -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-            0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-            0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-            0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-            -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-            -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
-    };
-// world space positions of our cubes
-    glm::vec3 cubePositions[] = {
-            glm::vec3( 0.0f,  0.0f,  0.0f),
-            glm::vec3( 2.0f,  5.0f, -15.0f),
-            glm::vec3(-1.5f, -2.2f, -2.5f),
-            glm::vec3(-3.8f, -2.0f, -12.3f),
-            glm::vec3( 2.4f, -0.4f, -3.5f),
-            glm::vec3(-1.7f,  3.0f, -7.5f),
-            glm::vec3( 1.3f, -2.0f, -2.5f),
-            glm::vec3( 1.5f,  2.0f, -2.5f),
-            glm::vec3( 1.5f,  0.2f, -1.5f),
-            glm::vec3(-1.3f,  1.0f, -1.5f)
-    };
-
-    unsigned int VBO, VAO;
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-
-    glBindVertexArray(VAO);
-
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-// position attribute
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-// texture coord attribute
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
+    Cylinder he;
+    auto rootCylinder = he.getMesh();
+//auto rootCylinder = m_cylinder->getMesh();
+    size_t vertexCountRootCylinder = he.returnVertexCount();
+//    GLuint root = Mesh::createVAO(rootCylinder);
+    GLuint root = he.returnVAO();
+    glBindVertexArray(root);
+    glUseProgram(m_shader->programId());
 
     while (!m_window->isWindowClosed()) {
-//        m_window->processInput();
-//        m_window->clearScreen();
         m_window->resize();
 
         handleInput();
 
         m_window->processInput();
         m_window->clearScreen();
+//        m_UI->reload(m_window, m_shader);
+//        glIsProgram(m_shader->getHandle())
 
 
-        glUseProgram(ourShader.programId());
+        glUseProgram(m_shader->programId());
         glm::mat4 projection = glm::mat4(1.0f);
         projection = m_camera->getProjectionM();
-        ourShader.setMat4("projection", projection);
+        m_shader->setMat4("projection", projection);
         glm::mat4 view = m_camera->getViewM();
-        ourShader.setMat4("view", view);
+        m_shader->setMat4("view", view);
 //                 render boxes
-        for (int i = 0; i < 10; i++)
-        {
+//        for (int i = 0; i < 10; i++)
+//        {
+//
+//            // calculate the model matrix for each object and pass it to shader before drawing
+//            glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
+//            model = glm::translate(model, cubePositions[i]);
+//            float angle = 20.0f * i;
+//            model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+//            ourShader.setMat4("model", model);
+////            ourShader.setVec4("ourColor", glm::vec4(0.88f, 0.33f, 0.25f, 1.0f));
+//
+//
+//            glDrawArrays(GL_TRIANGLES, 0, 36);
+//        }
 
-            // calculate the model matrix for each object and pass it to shader before drawing
-            glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
-            model = glm::translate(model, cubePositions[i]);
-            float angle = 20.0f * i;
-            model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
-//            m_camera->setTargetPos(model);
-            ourShader.setMat4("model", model);
 
-            glDrawArrays(GL_TRIANGLES, 0, 36);
-        }
+
+        glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
+        model = glm::translate(model, glm::vec3( 0.0f,  0.0f,  0.0f));
+        model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1.0f, 1.0f, 1.0f));
+        m_shader->setMat4("model", model);
+////        glm::mat3 normalMatrix = glm::mat3(inverse(glm::mat4(1.0f)));
+////        ourShader.setMat3("normalMatrix", normalMatrix);
+
+//        glDrawArrays(GL_TRIANGLES, 0, 3 * vertexCountRootCylinder);
+        glDrawArrays(GL_TRIANGLES, 0, 3 * vertexCountRootCylinder);
+
+
+
+
+        m_UI->imguiDraw(m_camera,
+                        m_cylinder
+//                        m_shader
+                        );
 
         m_window->swapBuffers();
-        m_window->pollEvents();
 
     }
-    glDeleteVertexArrays(1, &VAO);
-    glDeleteBuffers(1, &VBO);
+//    glDeleteVertexArrays(1, &VAO);
+//    glDeleteBuffers(1, &VBO);
+    m_UI->imguiDestroy();
 }
 void Render::destroy()
 {
     m_window->destroy();
+}
+void Render::r(GLFWwindow* aWindow, int aKey, int, int aAction, int)
+{
+    auto* sh = static_cast<Shader*>(
+            glfwGetWindowUserPointer(aWindow)
+    );
+//    auto pShader = std::dynamic_pointer_cast<Shader>(m_shader);
+    if (GLFW_KEY_R == aKey && GLFW_PRESS == aAction)
+    {
+        try
+        {
+            sh->reload();
+            std::fprintf(stderr, "Shaders reloaded and recompiled.\n");
+        }
+        catch (std::exception const& eErr)
+        {
+            std::fprintf(stderr, "Error when reloading shader:\n");
+            std::fprintf(stderr, "%s\n", eErr.what());
+            std::fprintf(stderr, "Keeping old shader.\n");
+        }
+    }
 }

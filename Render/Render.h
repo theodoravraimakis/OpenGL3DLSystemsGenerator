@@ -11,6 +11,8 @@
 #include "../Camera/ArcballCamera.h"
 #include "../Config.h"
 #include "../Shader/Shader.h"
+#include "../UI/UI.h"
+#include "../Cylinder/Cylinder.h"
 
 class Render {
 public:
@@ -24,12 +26,19 @@ private:
             double xoffset,
             double yoffset
     );
+    static void r(GLFWwindow* aWindow, int aKey, int, int aAction, int);
     void handleInput();
     void configureCallbacks();
     void destroy();
+
     std::shared_ptr<Window>             m_window;
+    std::unique_ptr<UI>                 m_UI;
     std::shared_ptr<ArcballCamera>      m_camera;
+    std::shared_ptr<Cylinder>           m_cylinder;
+std::shared_ptr<Shader>             m_shader;
+
     bool m_isMouseInMotion;
+
 };
 
 

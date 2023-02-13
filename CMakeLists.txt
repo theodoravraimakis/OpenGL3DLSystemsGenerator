@@ -27,8 +27,16 @@ FetchContent_MakeAvailable(glm glfw rapidobj) # can only use once
 
 
 add_executable(FinalYearProject main.cpp
-        UI/UI.cpp
-        Window/Window.cpp Shader/Shader.cpp Error/Error.cpp Checkpoint/Checkpoint.cpp Render/Render.cpp Camera/ArcballCamera.cpp)
+                                UI/UI.cpp
+                                Window/Window.cpp
+                                Shader/Shader.cpp
+                                Error/Error.cpp
+                                Checkpoint/Checkpoint.cpp
+                                Render/Render.cpp
+                                Camera/ArcballCamera.cpp
+                                Cylinder/Mesh.cpp
+                                Cylinder/Cylinder.cpp
+                )
 
 target_link_libraries(FinalYearProject glm glfw glad imgui rapidobj
 #learnopengl

@@ -6,13 +6,21 @@
 #define FINALYEARPROJECT_UI_H
 
 
-#include "../Render/Render.h"
+//#include "../Render/Render.h"
+#include <iostream>
+#include "../Window/Window.h"
+#include "../Camera/ArcballCamera.h"
+#include "../Cylinder/Cylinder.h"
+#include "../Shader/Shader.h"
 
 class UI {
 
 public:
     UI(
-            const std::shared_ptr<Window> &window
+            const std::shared_ptr<Window>& window,
+            const std::shared_ptr<ArcballCamera>& camera,
+            const std::shared_ptr<Cylinder> &cylinder
+//            const std::shared_ptr<Shader>& shader
     );
 
     ~UI();
@@ -20,10 +28,21 @@ public:
 
 
 //void imguiInitialisation (GLFWwindow* window);
-void imguiDisplay();
-void imguiDestroy();
+static void imguiDemo();
+static bool isCursorPositionInGUI() ;
+static bool isClicked();
+static void imguiDestroy();
 //void rot(ArcballCamera* arcCamera);
-void imguiDraw();
+static void imguiDraw(const std::shared_ptr<ArcballCamera> &camera,
+                      const std::shared_ptr<Cylinder> &cylinder
+//                      const std::shared_ptr<Shader> &shader
+);
+static void imguiCamera(const std::shared_ptr<ArcballCamera> &camera);
+static void imguiCylinder(
+        const std::shared_ptr<Cylinder> &cylinder
+//                          const std::shared_ptr<Shader> &shader
+);
+//void reload(const std::shared_ptr<Window>& window, const std::shared_ptr<Shader> &shader);
 };
 
 #endif //FINALYEARPROJECT_UI_H
