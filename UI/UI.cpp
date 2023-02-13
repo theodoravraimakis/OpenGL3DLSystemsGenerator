@@ -8,11 +8,14 @@
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 
+//#include "imGuIZMOquat.h"
+
 UI::UI(
         const std::shared_ptr<Window>& window,
         const std::shared_ptr<ArcballCamera>& camera,
-        const std::shared_ptr<Cylinder>& cylinder
+        const std::shared_ptr<Cylinder>& cylinder,
 //        const std::shared_ptr<Shader>& shader
+        const std::shared_ptr<Light> &light
 )
 {
 
@@ -90,7 +93,8 @@ void UI::imguiDemo()
 
 }
 void UI::imguiDraw(const std::shared_ptr<ArcballCamera> &camera,
-                   const std::shared_ptr<Cylinder> &cylinder
+                   const std::shared_ptr<Cylinder> &cylinder,
+                   const std::shared_ptr<Light> &light
 //                   const std::shared_ptr<Shader> &shader
 )
 {
@@ -98,18 +102,55 @@ void UI::imguiDraw(const std::shared_ptr<ArcballCamera> &camera,
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
 
-//    imguiDemo();
-//    imguiCamera(camera);
+//        imguiDemo();
+//    ImGui::Separator();
+//    ImGui::Begin(
+//            "Models",
+//            NULL
+//    );
+    static bool showCameraMenu = false;
+//    ImGui::Separator();
+    imguiCamera(camera);
 
-    imguiCylinder(
-            cylinder
-//            shader
-                  );
-    changeColor(cylinder);
+//    }
+//    ImGui::BeginMenuBar();
+//    {
+////        ImGui::BeginMenu("Parameters menu")
+////            ImGui::MenuItem("Camera menu bar", NULL, &showCameraMenu);
+////            ImGui::TreeNode("Camera"); imguiCamera(camera);ImGui::TreePop();
+////            ImGui::Separator();
+    if(ImGui::TreeNode("Cylinder")) {
+        imguiCylinder(
+                cylinder
+        );
+        changeColor(cylinder);
+        ImGui::TreePop();
+        ImGui::Separator();
+    }
+            changeLight(light);
+////        ImGui::EndMenu();
+//        ImGui::EndMenuBar();
+//    }
 
-
+//ImGui::End();
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+}
+void UI::parametersMenu()
+{
+    static bool showCameraMenu = false;
+    static bool showLightMenu = false;
+    static bool showCylinderMenu = false;
+    if (ImGui::BeginMenuBar())
+    {
+        if (ImGui::BeginMenu("Parameters menu")) {
+            ImGui::MenuItem("Camera menu bar", NULL, &showCameraMenu);
+            ImGui::MenuItem("Light menu bar", NULL, &showLightMenu);
+            ImGui::MenuItem("Cylinder menu bar", NULL, &showCylinderMenu);
+            ImGui::EndMenu();
+        }
+        ImGui::EndMenuBar();
+    }
 }
 void UI::imguiDestroy()
 {
@@ -173,15 +214,20 @@ void UI::imguiCamera(const std::shared_ptr<ArcballCamera> &camera)
 //            10.0f
 //    );}
 //    camera->setPos(pos);
-
-    float f = camera->getFOV();
-    ImGui::SliderFloat(
-            "dis",
-            &f,
-            -100.0f,
-            100.0f
-    );
-    camera->setFOV(f);
+//ImGui::Begin("Camera");
+    if (ImGui::TreeNode("Camera")) {
+        float f = camera->getFOV();
+        ImGui::SliderFloat(
+                "dis",
+                &f,
+                -100.0f,
+                100.0f
+        );
+        camera->setFOV(f);
+        ImGui::TreePop();
+        ImGui::Separator();
+    }
+//    ImGui::End();
 
 //    ImGui::Render();
 //    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -205,15 +251,19 @@ void UI::imguiCylinder(
 //    }
 
     ImGui::Checkbox("Cap on", &cylinder->m_change);
+    cylinder->updateCap();
+
 }
 void UI::changeColor(const std::shared_ptr<Cylinder> &cylinder)
 {
+
     glm::vec3 c = cylinder->getColor();
     ImGui::ColorEdit3(
             "color",
             (float *) &c
     );
     cylinder->setColor(c);
+
 }
 //void UI::reload(const std::shared_ptr<Window>& window
 //                ,const std::shared_ptr<Shader> &shader
@@ -238,3 +288,43 @@ void UI::changeColor(const std::shared_ptr<Cylinder> &cylinder)
 //        }
 //    }
 //}
+void UI::changeLight(const std::shared_ptr<Light> &light)
+{
+//    ImGui::Begin("Light");
+    if (ImGui::TreeNode("Light")) {
+    ImGui::ColorEdit3(
+            "color",
+            (float *) &light->m_lcolor
+    );
+    ImGui::SliderFloat("Strength", &light->m_lambient, 0.0f, 1.0f);
+
+    const std::string& name = "Light";
+    const std::vector<std::string> sliderNames =
+            {
+                    "X POSITION of " + name,
+                    "Y POSITION of " + name,
+                    "Z POSITION of " + name
+            };
+
+    glm::vec3 pos = light->m_lpos;
+
+    std::vector<float*> position = {
+            &pos.x,
+            &pos.y,
+            &pos.z
+    };
+    for (size_t i = 0; i < sliderNames.size(); i++)
+    {
+        ImGui::SliderFloat(
+                sliderNames[i].c_str(),
+                position[i],
+                -10.0f,
+                10.0f
+        );
+    }
+    light->setLightPos(pos);
+//    ImGui::End();
+        ImGui::TreePop();
+        ImGui::Separator();
+    }
+}

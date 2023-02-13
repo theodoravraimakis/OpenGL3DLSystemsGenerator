@@ -25,12 +25,14 @@ void Render::run()
     };
     m_shader = std::make_shared<Shader>(s);
     m_cylinder = std::make_shared<Cylinder>();
+    m_light = std::make_shared<Light>();
 
     m_UI = std::make_unique<UI>(
             m_window,
             m_camera,
-            m_cylinder
+            m_cylinder,
 //            m_shader
+            m_light
     );
 
     configureCallbacks();
@@ -249,7 +251,11 @@ void Render::mainLoop()
         model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1.0f, 1.0f, 1.0f));
         m_shader->setMat4("model", model);
 
-        m_shader->setVec4("color", glm::vec4(m_cylinder->getColor(), 1.0f));
+        m_shader->setVec3("color", m_cylinder->getColor());
+
+        m_shader->setVec3("lightColor", m_light->m_lcolor);
+        m_shader->setVec3("lightPosition", m_light->m_lpos);
+        m_shader->setFloat("ambientStrength", m_light->m_lambient);
 
 
 ////        glm::mat3 normalMatrix = glm::mat3(inverse(glm::mat4(1.0f)));
@@ -262,7 +268,8 @@ void Render::mainLoop()
 
 
         m_UI->imguiDraw(m_camera,
-                        m_cylinder
+                        m_cylinder,
+                        m_light
 //                        m_shader
                         );
 

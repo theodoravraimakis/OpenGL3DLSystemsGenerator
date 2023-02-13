@@ -35,7 +35,8 @@ private:
     std::unique_ptr<UI>                 m_UI;
     std::shared_ptr<ArcballCamera>      m_camera;
     std::shared_ptr<Cylinder>           m_cylinder;
-std::shared_ptr<Shader>             m_shader;
+    std::shared_ptr<Shader>             m_shader;
+    std::shared_ptr<Light>              m_light;
 
     bool m_isMouseInMotion;
 
