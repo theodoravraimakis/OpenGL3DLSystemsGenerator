@@ -11,7 +11,7 @@
 UI::UI(
         const std::shared_ptr<Window>& window,
         const std::shared_ptr<ArcballCamera>& camera,
-        const std::shared_ptr<Cylinder> &cylinder
+        const std::shared_ptr<Cylinder>& cylinder
 //        const std::shared_ptr<Shader>& shader
 )
 {
@@ -100,10 +100,13 @@ void UI::imguiDraw(const std::shared_ptr<ArcballCamera> &camera,
 
 //    imguiDemo();
 //    imguiCamera(camera);
+
     imguiCylinder(
             cylinder
 //            shader
                   );
+    changeColor(cylinder);
+
 
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -127,15 +130,19 @@ bool UI::isCursorPositionInGUI()
 
 bool UI::isClicked()
 {
-//    ImGuiIO& io = ImGui::GetIO();
-//    bool handled = false;
-//    handled = io.WantCaptureMouse;
-//io.AddMouseButtonEvent(0,true);
-    if (ImGui::IsMouseClicked(0, true))
+    if (ImGui::IsMouseClicked(0, false))
         return true;
-//        io.AddMouseButtonEvent(ImGuiMouseButton_Left, true);
-
     return false;
+}
+bool UI::clicked()
+{
+    if (ImGui::GetMouseClickedCount(0) == 1 ||
+        ImGui::GetMouseClickedCount(1) == 1 ||
+        ImGui::GetMouseClickedCount(2) == 1
+    )
+        return true;
+    return false;
+
 }
 
 void UI::imguiCamera(const std::shared_ptr<ArcballCamera> &camera)
@@ -179,27 +186,34 @@ void UI::imguiCamera(const std::shared_ptr<ArcballCamera> &camera)
 //    ImGui::Render();
 //    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
-
+//void UI::setImguiVars() {
+//    m_cap = cy
+//}
 void UI::imguiCylinder(
         const std::shared_ptr<Cylinder> &cylinder
 //                       const std::shared_ptr<Shader> &shader
 )
 {
+//        glm::vec3 c = cylinder->getColor();
+//        ImGui::ColorEdit3(
+//                "color",
+//                (float *) &c
+//        );
+//    if(isCursorPositionInGUI() && isClicked()) {
+//        std::cout << "true";
+//        cylinder->setColor(c);
+//    }
 
-        glm::vec3 c = cylinder->getColor();
-        ImGui::ColorEdit3(
-                "color",
-                (float *) &c
-        );
-    if(isCursorPositionInGUI() && isClicked()) {
-        std::cout << "true";
-        cylinder->setColor(c);
-    }
-
-
-//        Render::r(window, )
-//        reload();
-
+    ImGui::Checkbox("Cap on", &cylinder->m_change);
+}
+void UI::changeColor(const std::shared_ptr<Cylinder> &cylinder)
+{
+    glm::vec3 c = cylinder->getColor();
+    ImGui::ColorEdit3(
+            "color",
+            (float *) &c
+    );
+    cylinder->setColor(c);
 }
 //void UI::reload(const std::shared_ptr<Window>& window
 //                ,const std::shared_ptr<Shader> &shader

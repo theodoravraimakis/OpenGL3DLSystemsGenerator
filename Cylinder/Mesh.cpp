@@ -42,20 +42,20 @@ GLuint Mesh::createVAO(MeshData const& aMeshData)
             nullptr);
     glEnableVertexAttribArray(1);
 
-//    glBindBuffer(GL_ARRAY_BUFFER, normalVBO);
-//    glVertexAttribPointer(
-//            2,
-//            3, GL_FLOAT, GL_FALSE,
-//            0,
-//            nullptr);
-//    glEnableVertexAttribArray(2);
+    glBindBuffer(GL_ARRAY_BUFFER, normalVBO);
+    glVertexAttribPointer(
+            2,
+            3, GL_FLOAT, GL_FALSE,
+            0,
+            nullptr);
+    glEnableVertexAttribArray(2);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
     glDeleteBuffers(1, &colorVBO);
     glDeleteBuffers(1, &positionVBO);
-//    glDeleteBuffers(1, &normalVBO);
+    glDeleteBuffers(1, &normalVBO);
     return VAO;
 }
 

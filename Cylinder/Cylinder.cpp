@@ -26,6 +26,11 @@ void Cylinder::makeCylinder(
         ) {
     std::vector<glm::vec3> vertices;
     std::vector<glm::vec3> normals;
+    m_color = color;
+    m_cap = cap;
+    m_count = count;
+    m_transformations = glm::mat4(1.0f);
+    m_change = m_cap;
     glm::vec4 aColor = glm::vec4(color, 1.0f);
     float prevY = cos(0.f);
     float prevZ = sin(0.f);
@@ -112,22 +117,26 @@ MeshData Cylinder::getMesh()
 }
 glm::vec3 Cylinder::getColor()
 {
-    return glm::vec3(m_mesh.colors[0]);
+//    return glm::vec3(m_mesh.colors[0]);
+return m_color;
 }
 void Cylinder
 ::setColor(const glm::vec3 newCol)
 {
-
-//    m_color = newCol;
-
-    updateVAO(updateColor(glm::vec4(newCol, 1.0f)));
-//    std::cout << glm::to_string(m_mesh.colors[0]) << std::endl;
-
+    m_color = newCol;
+}
+void Cylinder
+::updateCap()
+{
+    if (m_cap != m_change)
+    {
+        m_cap = m_change;
+        updateMesh();
+        updateVAO();
+    }
 }
 MeshData Cylinder::updateColor(glm::vec4 newCol)
 {
-//    m_color = glm::vec4(newCol, 1.0f);
-//m_mesh.colors.clear();
     std::vector newColors(m_mesh.positions.size(), newCol);
     MeshData mesh = {
             m_mesh.positions,
@@ -136,7 +145,10 @@ MeshData Cylinder::updateColor(glm::vec4 newCol)
     };
     m_mesh = mesh;
     return mesh;
-//    updateVAO();
+}
+void Cylinder::updateMesh()
+{
+    makeCylinder(m_cap, m_count, m_color, m_transformations);
 }
 void Cylinder::createVAO()
 {
@@ -145,10 +157,16 @@ void Cylinder::createVAO()
 //    m_mesh.normals.clear();
    Mesh::createVAO(m_mesh);
 }
-void Cylinder::updateVAO(MeshData mesh) {
-    glDeleteBuffers(1, &m_VAO);
-    GLuint v = Mesh::createVAO(mesh);
-    glBindVertexArray(v);
+//void Cylinder::updateVAO(MeshData mesh) {
+//    glDeleteBuffers(1, &m_VAO);
+//    GLuint v = Mesh::createVAO(mesh);
+//    glBindVertexArray(v);
+//}
+void Cylinder::updateVAO() {
+//    glDeleteBuffers(1, &m_VAO);
+    m_VAO = Mesh::createVAO(m_mesh);
+    glBindVertexArray(m_VAO);
+//    m_VAO = v;
 }
 GLuint Cylinder::returnVAO()
 {
@@ -158,6 +176,11 @@ GLuint Cylinder::returnVAO()
 size_t Cylinder::returnVertexCount()
 {
     return m_mesh.positions.size();
+}
+
+bool Cylinder::getCap() const
+{
+    return m_cap;
 }
 
 Cylinder::~Cylinder()

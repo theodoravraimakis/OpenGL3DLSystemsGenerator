@@ -27,11 +27,14 @@ public:
     MeshData getMesh();
     glm::vec3 getColor();
     void setColor(glm::vec3 newCol);
+    void updateCap();
     MeshData updateColor(glm::vec4 newCol);
+    void updateMesh();
     void createVAO();
-    void updateVAO(MeshData mesh);
+    void updateVAO();
     GLuint returnVAO();
     size_t returnVertexCount();
+    bool getCap() const;
 //    void updateColor();
     ~Cylinder();
 
@@ -39,6 +42,10 @@ protected:
     MeshData m_mesh;
     glm::vec3 m_color;
     GLuint m_VAO;
+    bool m_cap;
+    bool m_change;
+    int m_count;
+    glm::mat4 m_transformations;
 //    static std::vector<glm::vec3> vertices;
 //    std::vector<glm::vec4> colors;
 //    static std::vector<glm::vec3> normals;

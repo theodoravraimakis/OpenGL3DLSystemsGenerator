@@ -244,12 +244,14 @@ void Render::mainLoop()
 //            glDrawArrays(GL_TRIANGLES, 0, 36);
 //        }
 
-
-
         glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
         model = glm::translate(model, glm::vec3( 0.0f,  0.0f,  0.0f));
         model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1.0f, 1.0f, 1.0f));
         m_shader->setMat4("model", model);
+
+        m_shader->setVec4("color", glm::vec4(m_cylinder->getColor(), 1.0f));
+
+
 ////        glm::mat3 normalMatrix = glm::mat3(inverse(glm::mat4(1.0f)));
 ////        ourShader.setMat3("normalMatrix", normalMatrix);
 
