@@ -10,7 +10,7 @@
 
 constexpr float kPi_ = 3.1415926f;
 
-class Cylinder {
+class Cylinder : public Shape {
 public:
     Cylinder(
             bool cap,
@@ -26,19 +26,21 @@ public:
             );
 
     MeshData getMesh();
-    glm::vec3 getColor();
-    void setColor(glm::vec3 newCol);
-    void updateCap();
+    glm::vec3& getColor();
+    void setColor(glm::vec3& newCol);
+    void updateCap(bool newCap);
     MeshData updateColor(glm::vec4 newCol);
     void updateMesh();
     void createVAO();
     void updateVAO();
-    GLuint returnVAO();
+    GLuint getVAO();
     size_t getVertexCount();
-    bool getCap() const;
+    bool* getCap();
+    bool* changeCap();
     ~Cylinder();
 
 protected:
+    Mesh m;
     MeshData m_cylinderMesh;
     glm::vec3 m_color;
     GLuint m_VAO;
@@ -51,6 +53,7 @@ private:
     friend class UI;
     friend class coordianteAxesArrows;
     friend class Render;
+    friend class Turtle;
 };
 
 

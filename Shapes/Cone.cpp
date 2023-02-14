@@ -149,11 +149,11 @@ void Cone::updateMesh()
 }
 void Cone::createVAO()
 {
-    m_VAO = Mesh::createVAO(m_coneMesh);
+    m_VAO = m.createVAO(m_coneMesh);
 }
 void Cone::updateVAO() {
 //    glDeleteBuffers(1, &m_VAO);
-    m_VAO = Mesh::createVAO(m_coneMesh);
+    m_VAO = m.createVAO(m_coneMesh);
     glBindVertexArray(m_VAO);
 //    m_VAO = v;
 }

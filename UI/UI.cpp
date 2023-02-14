@@ -93,7 +93,7 @@ void UI::imguiDemo()
 
 }
 void UI::imguiDraw(const std::shared_ptr<ArcballCamera> &camera,
-                   const std::shared_ptr<Cylinder> &cylinder,
+                   const std::shared_ptr<Shape> &shape,
                    const std::shared_ptr<Light> &light
 //                   const std::shared_ptr<Shader> &shader
 )
@@ -120,10 +120,10 @@ void UI::imguiDraw(const std::shared_ptr<ArcballCamera> &camera,
 ////            ImGui::TreeNode("Camera"); imguiCamera(camera);ImGui::TreePop();
 ////            ImGui::Separator();
     if(ImGui::TreeNode("Cylinder")) {
-        imguiCylinder(
-                cylinder
+        shapeCap(
+                shape
         );
-        changeColor(cylinder);
+        changeColor(shape);
         ImGui::TreePop();
         ImGui::Separator();
     }
@@ -265,8 +265,8 @@ void UI::imguiCamera(const std::shared_ptr<ArcballCamera> &camera)
 //void UI::setImguiVars() {
 //    m_cap = cy
 //}
-void UI::imguiCylinder(
-        const std::shared_ptr<Cylinder> &cylinder
+void UI::shapeCap(
+        const std::shared_ptr<Shape> &shape
 //                       const std::shared_ptr<Shader> &shader
 )
 {
@@ -279,20 +279,39 @@ void UI::imguiCylinder(
 //        std::cout << "true";
 //        cylinder->setColor(c);
 //    }
+    bool* change = shape->changeCap();
 
-    ImGui::Checkbox("Cap on", &cylinder->m_change);
-    cylinder->updateCap();
+    ImGui::Checkbox("Cap on", change);
+    if (*shape->getCap() != *shape->changeCap()) {
+        shape->updateCap(*change);
+        std::cout << "vio" << std::endl;
+    }
+
 
 }
-void UI::changeColor(const std::shared_ptr<Cylinder> &cylinder)
+void UI::changeColor(const std::shared_ptr<Shape> &shape) //
 {
 
-    glm::vec3 c = cylinder->getColor();
+//    glm::vec3 c = shape->getColor();
+//    ImGui::ColorEdit3(
+//            "color",
+//            (float *) &c
+//    );
+//    shape->setColor(c);
+
+    glm::vec3 c = shape->getColor();
+
     ImGui::ColorEdit3(
-            "color",
-            (float *) &c
+            "Color",
+            glm::value_ptr(c)
     );
-    cylinder->setColor(c);
+//    std::cout << glm::value_ptr(c) << std::endl;
+    if (shape->getColor() != c) {
+        shape->setColor(c);
+        std::cout << "vio" << std::endl;
+    }
+
+
 
 }
 

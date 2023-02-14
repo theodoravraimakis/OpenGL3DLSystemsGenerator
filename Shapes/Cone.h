@@ -36,6 +36,7 @@ public:
     ~Cone();
 
 protected:
+    Mesh m;
     MeshData m_coneMesh;
     glm::vec3 m_color;
     GLuint m_VAO;

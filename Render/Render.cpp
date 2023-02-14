@@ -32,6 +32,7 @@ void Render::run()
     m_turtle = std::make_shared<Turtle>();
     m_coordsAxis = std::make_shared<coordinateAxesArrows>();
 
+
     m_UI = std::make_unique<UI>(
             m_window,
             m_camera,
@@ -210,18 +211,17 @@ void Render::mainLoop()
 //    glEnableVertexAttribArray(1);
 
 //    Cylinder he();
-//    auto rootCylinder = m_cylinder->getMesh();
-////auto rootCylinder = m_cylinder->getMesh();
-//    size_t vertexCountRootCylinder = m_cylinder->getVertexCount();
-//    GLuint root = Mesh::createVAO(rootCylinder);
-////    GLuint root = m_cylinder->returnVAO();
-//    glBindVertexArray(root);
+    auto rootCylinder = m_cylinder->getMesh();
+//auto rootCylinder = m_cylinder->getMesh();
+    size_t vertexCountRootCylinder = m_cylinder->getVertexCount();
+    GLuint root = m_cylinder->getVAO();
+//    GLuint root = m_cylinder->getVAO();
+    glBindVertexArray(root);
 
-    auto axesArrowsMesh = m_coordsAxis->m_axesArrows;
-    GLuint x = Mesh::createVAO(axesArrowsMesh);
-    Mesh::clearMesh(axesArrowsMesh);
-    size_t vertexCountRootCylinder = axesArrowsMesh.positions.size();
-    glBindVertexArray(x);
+//    auto axesArrowsMesh = m_coordsAxis->m_axesArrows;
+//    GLuint x = m_coordsAxis->m_VAO;
+//    size_t vertexCountRootCylinder = axesArrowsMesh.positions.size();
+//    glBindVertexArray(x);
 //Cone heh(true, 16, glm::vec3(0.0f),glm::mat4(1.0f));
 //    auto c = heh.getMesh();
 //    heh.createVAO();
@@ -262,11 +262,12 @@ void Render::mainLoop()
 //
 //            glDrawArrays(GL_TRIANGLES, 0, 36);
 //        }
+//        m_coordsAxis->draw();
 
-        glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
-        model = glm::translate(model, glm::vec3( 0.0f,  0.0f,  0.0f));
+//        glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
+//        model = glm::translate(model, glm::vec3( 0.0f,  0.0f,  0.0f));
 //        model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1.0f, 1.0f, 1.0f));
-        m_shader->setMat4("model", model);
+//        m_shader->setMat4("model", model);
 
 //        m_shader->setVec3("color", m_cylinder->getColor());
 
@@ -283,9 +284,9 @@ void Render::mainLoop()
 
 //        glDrawArrays(GL_TRIANGLES, 0, 3 * vertexCountRootCylinder);
 //        glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
-        glDrawArrays(GL_TRIANGLES, 0, 3 * vertexCountRootCylinder);
+//        glDrawArrays(GL_TRIANGLES, 0, 3 * vertexCountRootCylinder);
 
-//        m_turtle->computeFinalWorldM();
+        m_turtle->computeFinalWorldM();
 //        std::vector<glm::mat4> models = m_turtle->returnFinalWorldM();
 //        for (unsigned int i = 1; i < models.size(); i++)
 //        {
@@ -294,6 +295,7 @@ void Render::mainLoop()
 //        }
 
 
+        m_turtle->draw(m_shader, m_cylinder);
 
 
 

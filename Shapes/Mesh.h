@@ -25,19 +25,26 @@ struct MeshData
 
 class Mesh {
 public:
-    static GLuint createVAO(MeshData const&);
-    static MeshData concatenate(MeshData aM, MeshData const& aN );
+    GLuint createVAO(MeshData const&);
+    MeshData concatenate(MeshData aM, MeshData const& aN );
     friend class coordianteAxesArrows;
-    inline static void clearMesh(MeshData mesh) {
+    inline void clearMesh(MeshData mesh) {
         mesh.colors.clear();
         mesh.normals.clear();
         mesh.positions.clear();
     }
 };
 
-//class Shape {
-//
-//};
+class Shape {
+public:
+    virtual size_t getVertexCount() = 0;
+    virtual GLuint getVAO() = 0;
+    virtual glm::vec3& getColor() = 0;
+    virtual void setColor(glm::vec3& newCol) = 0;
+    virtual bool* changeCap() = 0;
+    virtual void updateCap(bool newCap) = 0;
+    virtual bool* getCap() = 0;
+};
 
 
 #endif //FINALYEARPROJECT_MESH_H

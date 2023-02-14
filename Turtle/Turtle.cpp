@@ -4,6 +4,7 @@
 //
 #include "Turtle.h"
 
+
 void Turtle::computeFinalWorldM() {
     for (unsigned int i = 1; i < worldMatrices.size(); i++) {
         finalWorldMatrices[i] = finalWorldMatrices[parentVectors[i]] * worldMatrices[i];
@@ -12,6 +13,21 @@ void Turtle::computeFinalWorldM() {
 
 std::vector<glm::mat4> Turtle::returnFinalWorldM() {
     return  finalWorldMatrices;
+}
+
+void Turtle::draw(
+        const std::shared_ptr<Shader> &shader,
+        const std::shared_ptr<Shape> &shape
+        ) {
+    glBindVertexArray(shape->getVAO());
+    for (unsigned int i = 1; i < finalWorldMatrices.size(); i++)
+    {
+//        glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
+//        model = glm::translate(model, glm::vec3( 0.0f,  0.0f,  0.0f));
+        shader->setMat4("model", finalWorldMatrices[i]);
+        glDrawArrays(GL_TRIANGLES, 0, shape->getVertexCount() * 3);
+
+    }
 }
 
 //void Turtle::draw() {

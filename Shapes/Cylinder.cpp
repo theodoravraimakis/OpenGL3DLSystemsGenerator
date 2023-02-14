@@ -101,21 +101,32 @@ MeshData Cylinder::getMesh()
 {
     return m_cylinderMesh;
 }
-glm::vec3 Cylinder::getColor()
+glm::vec3& Cylinder::getColor()
 {
-return m_color;
+    return m_color;
 }
 void Cylinder
-::setColor(const glm::vec3 newCol)
+::setColor(glm::vec3& newCol)
 {
-    m_color = newCol;
-}
-void Cylinder
-::updateCap()
-{
-    if (m_cap != m_change)
+    if (m_color != newCol)
     {
-        m_cap = m_change;
+        m_color = newCol;
+        updateMesh();
+        updateVAO();
+    }
+}
+void Cylinder
+::updateCap(bool newCap)
+{
+//    if (m_cap != m_change)
+//    {
+//        m_cap = m_change;
+//        updateMesh();
+//        updateVAO();
+//    }
+    if (m_cap != newCap)
+    {
+        m_cap = newCap;
         updateMesh();
         updateVAO();
     }
@@ -137,15 +148,15 @@ void Cylinder::updateMesh()
 }
 void Cylinder::createVAO()
 {
-   m_VAO = Mesh::createVAO(m_cylinderMesh);
+   m_VAO = m.createVAO(m_cylinderMesh);
 }
 void Cylinder::updateVAO() {
 //    glDeleteBuffers(1, &m_VAO);
-    m_VAO = Mesh::createVAO(m_cylinderMesh);
+    m_VAO = m.createVAO(m_cylinderMesh);
     glBindVertexArray(m_VAO);
 //    m_VAO = v;
 }
-GLuint Cylinder::returnVAO()
+GLuint Cylinder::getVAO()
 {
     createVAO();
     return m_VAO;
@@ -155,9 +166,13 @@ size_t Cylinder::getVertexCount()
     return m_cylinderMesh.positions.size();
 }
 
-bool Cylinder::getCap() const
+bool* Cylinder::getCap()
 {
-    return m_cap;
+    return &m_cap;
+}
+
+bool* Cylinder::changeCap() {
+    return &m_change;
 }
 
 Cylinder::~Cylinder() {

@@ -32,14 +32,14 @@ private:
     void configureCallbacks();
     void destroy();
 
-    std::shared_ptr<Window>             m_window;
-    std::unique_ptr<UI>                 m_UI;
-    std::shared_ptr<ArcballCamera>      m_camera;
-    std::shared_ptr<Cylinder>           m_cylinder;
-    std::shared_ptr<Shader>             m_shader;
-    std::shared_ptr<Light>              m_light;
-    std::shared_ptr<Turtle>              m_turtle;
-    std::shared_ptr<coordinateAxesArrows>              m_coordsAxis;
+    std::shared_ptr<Window>                         m_window;
+    std::unique_ptr<UI>                             m_UI;
+    std::shared_ptr<ArcballCamera>                  m_camera;
+    std::shared_ptr<Cylinder>                       m_cylinder;
+    std::shared_ptr<Shader>                         m_shader;
+    std::shared_ptr<Light>                          m_light;
+    std::shared_ptr<Turtle>                         m_turtle;
+    std::shared_ptr<coordinateAxesArrows>           m_coordsAxis;
 
     bool m_isMouseInMotion;
 
