@@ -3,8 +3,8 @@
 //
 
 #include "ArcballCamera.h"
-#include "GLFW/glfw3.h"
-#include "glm/gtx/transform.hpp"
+//#include "GLFW/glfw3.h"
+//#include "glm/gtx/transform.hpp"
 
 ArcballCamera::ArcballCamera
 (

@@ -17,15 +17,20 @@ void Render::run()
             m_window->get(),
             glm::fvec4(0.0f, 0.0f, 5.0f, 1.0f),
             glm::fvec4(0.0f),
-            45.0f
+//            45.0f
+            100.0f
     );
     std::vector<Shader::ShaderSource> s = {
             { GL_VERTEX_SHADER, "../Shaders/camera.vert" },
             { GL_FRAGMENT_SHADER, "../Shaders/camera.frag" }
     };
     m_shader = std::make_shared<Shader>(s);
-    m_cylinder = std::make_shared<Cylinder>();
+    m_cylinder = std::make_shared<Cylinder>(
+            true, 128, glm::vec3(0.48f, 0.33f, 0.25f), glm::mat4(1.0f)
+            );
     m_light = std::make_shared<Light>();
+    m_turtle = std::make_shared<Turtle>();
+    m_coordsAxis = std::make_shared<coordinateAxesArrows>();
 
     m_UI = std::make_unique<UI>(
             m_window,
@@ -204,13 +209,26 @@ void Render::mainLoop()
 //    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 //    glEnableVertexAttribArray(1);
 
-    Cylinder he;
-    auto rootCylinder = he.getMesh();
-//auto rootCylinder = m_cylinder->getMesh();
-    size_t vertexCountRootCylinder = he.returnVertexCount();
+//    Cylinder he();
+//    auto rootCylinder = m_cylinder->getMesh();
+////auto rootCylinder = m_cylinder->getMesh();
+//    size_t vertexCountRootCylinder = m_cylinder->getVertexCount();
 //    GLuint root = Mesh::createVAO(rootCylinder);
-    GLuint root = he.returnVAO();
-    glBindVertexArray(root);
+////    GLuint root = m_cylinder->returnVAO();
+//    glBindVertexArray(root);
+
+    auto axesArrowsMesh = m_coordsAxis->m_axesArrows;
+    GLuint x = Mesh::createVAO(axesArrowsMesh);
+    Mesh::clearMesh(axesArrowsMesh);
+    size_t vertexCountRootCylinder = axesArrowsMesh.positions.size();
+    glBindVertexArray(x);
+//Cone heh(true, 16, glm::vec3(0.0f),glm::mat4(1.0f));
+//    auto c = heh.getMesh();
+//    heh.createVAO();
+//    size_t vertexCountRootCylinder = c.positions.size();
+////    GLuint v = heh.getVertexCount();
+//    glBindVertexArray(heh.returnVAO());
+
     glUseProgram(m_shader->programId());
 
     while (!m_window->isWindowClosed()) {
@@ -222,7 +240,6 @@ void Render::mainLoop()
         m_window->clearScreen();
 //        m_UI->reload(m_window, m_shader);
 //        glIsProgram(m_shader->getHandle())
-
 
         glUseProgram(m_shader->programId());
         glm::mat4 projection = glm::mat4(1.0f);
@@ -248,10 +265,13 @@ void Render::mainLoop()
 
         glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
         model = glm::translate(model, glm::vec3( 0.0f,  0.0f,  0.0f));
-        model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1.0f, 1.0f, 1.0f));
+//        model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1.0f, 1.0f, 1.0f));
         m_shader->setMat4("model", model);
 
-        m_shader->setVec3("color", m_cylinder->getColor());
+//        m_shader->setVec3("color", m_cylinder->getColor());
+
+
+
 
         m_shader->setVec3("lightColor", m_light->m_lcolor);
         m_shader->setVec3("lightPosition", m_light->m_lpos);
@@ -262,7 +282,17 @@ void Render::mainLoop()
 ////        ourShader.setMat3("normalMatrix", normalMatrix);
 
 //        glDrawArrays(GL_TRIANGLES, 0, 3 * vertexCountRootCylinder);
+//        glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
         glDrawArrays(GL_TRIANGLES, 0, 3 * vertexCountRootCylinder);
+
+//        m_turtle->computeFinalWorldM();
+//        std::vector<glm::mat4> models = m_turtle->returnFinalWorldM();
+//        for (unsigned int i = 1; i < models.size(); i++)
+//        {
+//            m_shader->setMat4("model", models[i]);
+//            glDrawArrays(GL_TRIANGLES, 0, vertexCountRootCylinder * 3);
+//        }
+
 
 
 
@@ -282,7 +312,8 @@ void Render::mainLoop()
 }
 void Render::destroy()
 {
-    m_window->destroy();
+//    m_window->destroy();
+//    m_shader->d
 }
 void Render::r(GLFWwindow* aWindow, int aKey, int, int aAction, int)
 {

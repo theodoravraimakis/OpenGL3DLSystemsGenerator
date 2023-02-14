@@ -59,3 +59,11 @@ GLuint Mesh::createVAO(MeshData const& aMeshData)
     return VAO;
 }
 
+MeshData Mesh::concatenate( MeshData aM, MeshData const& aN )
+{
+    aM.positions.insert( aM.positions.end(), aN.positions.begin(), aN.positions.end() );
+    aM.colors.insert( aM.colors.end(), aN.colors.begin(), aN.colors.end() );
+    return aM;
+}
+
+

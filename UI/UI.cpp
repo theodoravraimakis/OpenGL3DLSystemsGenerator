@@ -189,6 +189,8 @@ bool UI::clicked()
 void UI::imguiCamera(const std::shared_ptr<ArcballCamera> &camera)
 {
 
+
+
 //
 //    glm::vec3 pos = camera->getPositionV();
 //
@@ -218,12 +220,40 @@ void UI::imguiCamera(const std::shared_ptr<ArcballCamera> &camera)
     if (ImGui::TreeNode("Camera")) {
         float f = camera->getFOV();
         ImGui::SliderFloat(
-                "dis",
+                "FOV",
                 &f,
-                -100.0f,
-                100.0f
+                0.0f,
+                200.0f
         );
         camera->setFOV(f);
+
+        const std::string& name = "Camera";
+        const std::vector<std::string> sliderNames =
+                {
+                        "X POSITION of " + name,
+                        "Y POSITION of " + name,
+                        "Z POSITION of " + name
+                };
+
+        glm::vec4 pos = camera->m_pos;
+
+        std::vector<float*> position = {
+                &pos.w,
+                &pos.x,
+                &pos.y,
+                &pos.z
+        };
+        for (size_t i = 0; i < sliderNames.size(); i++)
+        {
+            ImGui::SliderFloat(
+                    sliderNames[i].c_str(),
+                    position[i],
+                    -100.0f,
+                    100.0f
+            );
+        }
+        camera->setPos(pos);
+
         ImGui::TreePop();
         ImGui::Separator();
     }
@@ -265,32 +295,9 @@ void UI::changeColor(const std::shared_ptr<Cylinder> &cylinder)
     cylinder->setColor(c);
 
 }
-//void UI::reload(const std::shared_ptr<Window>& window
-//                ,const std::shared_ptr<Shader> &shader
-//)
-//{
-//    Shader* s = static_cast<Shader*>(
-//            glfwGetWindowUserPointer(window->get())
-//    );
-////    auto pShader = std::dynamic_pointer_cast<Shader>(shader);
-//    if (glfwGetKey(window->get(), GLFW_KEY_R) == GLFW_PRESS)
-//    {
-//        try
-//        {
-//            s->reload();
-//            std::fprintf(stderr, "Shaders reloaded and recompiled.\n");
-//        }
-//        catch (std::exception const& eErr)
-//        {
-//            std::fprintf(stderr, "Error when reloading shader:\n");
-//            std::fprintf(stderr, "%s\n", eErr.what());
-//            std::fprintf(stderr, "Keeping old shader.\n");
-//        }
-//    }
-//}
+
 void UI::changeLight(const std::shared_ptr<Light> &light)
 {
-//    ImGui::Begin("Light");
     if (ImGui::TreeNode("Light")) {
     ImGui::ColorEdit3(
             "color",
@@ -323,7 +330,7 @@ void UI::changeLight(const std::shared_ptr<Light> &light)
         );
     }
     light->setLightPos(pos);
-//    ImGui::End();
+
         ImGui::TreePop();
         ImGui::Separator();
     }

@@ -10,9 +10,9 @@
 #include <iostream>
 #include "../Window/Window.h"
 #include "../Camera/ArcballCamera.h"
-#include "../Cylinder/Cylinder.h"
+#include "../Shapes/Cylinder.h"
 #include "../Shader/Shader.h"
-#include "../Config.h"
+#include "../Config/Config.h"
 
 class UI {
 

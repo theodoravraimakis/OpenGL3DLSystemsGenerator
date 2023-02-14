@@ -108,10 +108,14 @@ void Window::pollEvents()
     glfwPollEvents();
 }
 
-void Window::destroy()
+//void Window::destroy()
+//{
+//    glfwDestroyWindow(window);
+//    glfwTerminate();
+//}
+
+Window::~Window()
 {
     glfwDestroyWindow(window);
     glfwTerminate();
 }
-
-Window::~Window() = default;

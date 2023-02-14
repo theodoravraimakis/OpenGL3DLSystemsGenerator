@@ -1,37 +1,33 @@
 //
-// Created by Theodora Vraimakis on 12/02/2023.
+// Created by Theodora Vraimakis on 14/02/2023.
 //
 
-#include "Cylinder.h"
-#include "iostream"
-#include "glm/ext.hpp"
-#include "glm/gtx/string_cast.hpp"
+#include "Cone.h"
 
-Cylinder::Cylinder(
-//        bool cap,
-//        int count,
-//        glm::vec3 color,
-//        glm::mat4 transformations
+
+Cone::Cone(
+        bool cap,
+        int count,
+        glm::vec3 color,
+        glm::mat4 transformations
         ) {
-//    m_mesh = MeshData{vertices, colors, normals};
-    makeCylinder(true, 128, { 0.48f, 0.33f, 0.25f }, glm::mat4(1.0f));
-//    m_color = { 0.48f, 0.33f, 0.25f };
-//    m_mesh = {};
+    makeCone(cap, count, color, transformations);
 };
-void Cylinder::makeCylinder(
-            bool cap,
-            int count,
-            glm::vec3 color,
-            glm::mat4 transformations
-        ) {
+void Cone::makeCone(
+        bool cap,
+        int count,
+        glm::vec3 color,
+        glm::mat4 transformations
+) {
     std::vector<glm::vec3> vertices;
     std::vector<glm::vec3> normals;
     m_color = color;
     m_cap = cap;
     m_count = count;
-    m_transformations = glm::mat4(1.0f);
+    m_transformations = transformations;
     m_change = m_cap;
     glm::vec4 aColor = glm::vec4(color, 1.0f);
+
     float prevY = cos(0.f);
     float prevZ = sin(0.f);
 
@@ -40,24 +36,33 @@ void Cylinder::makeCylinder(
         float y = cos(angle);
         float z = sin(angle);
 
+//        vertices.emplace_back(glm::vec3(0.f, 0.f, 0.f));
+//        vertices.emplace_back(glm::vec3(0.f, 0.f, 0.f));
+//        vertices.emplace_back(glm::vec3(1.f, 1.f, 1.f));
         vertices.emplace_back(glm::vec3(0.f, prevY, prevZ));
         vertices.emplace_back(glm::vec3(0.f, y, z));
-        vertices.emplace_back(glm::vec3(1.f, prevY, prevZ));
+        vertices.emplace_back(glm::vec3(1.f, 0.0f, 0.0f));
 
         normals.emplace_back(normalize(glm::vec3(0.f, y, z)));
         normals.emplace_back(normalize(glm::vec3(0.f, y, z)));
         normals.emplace_back(normalize(glm::vec3(0.f, y, z)));
 
-        vertices.emplace_back(glm::vec3(0.f, y, z));
-        vertices.emplace_back(glm::vec3(1.f, y, z));
-        vertices.emplace_back(glm::vec3(1.f, prevY, prevZ));
+//        vertices.emplace_back(glm::vec3(0.f, 0.f, 0.f));
+//        vertices.emplace_back(glm::vec3(1.f, y, z));
+//        vertices.emplace_back(glm::vec3(1.f, prevY, prevZ));
+        vertices.emplace_back(glm::vec3(0.0f, prevY, prevZ));
+        vertices.emplace_back(glm::vec3(0.0f, y, z));
+        vertices.emplace_back(glm::vec3(1.f, 0.0f, 0.0f));
 
         normals.emplace_back(normalize(glm::vec3(0.f, y, z)));
         normals.emplace_back(normalize(glm::vec3(0.f, y, z)));
         normals.emplace_back(normalize(glm::vec3(0.f, y, z)));
 
-        //Create caps of the cylinder
+        //Create cap of the Cone
         if (cap) {
+//            vertices.emplace_back(glm::vec3(0.f, 0.f, 0.f));
+//            vertices.emplace_back(glm::vec3(0.f, 0.f, 0.f));
+//            vertices.emplace_back(glm::vec3(0.f, 0.f, 0.f));
             vertices.emplace_back(glm::vec3(0.f, y, z));
             vertices.emplace_back(glm::vec3(0.f, prevY, prevZ));
             vertices.emplace_back(glm::vec3(0.f, 0.f, 0.f));
@@ -66,9 +71,12 @@ void Cylinder::makeCylinder(
             normals.emplace_back(glm::vec3(-1.f, 0.f, 0.f));
             normals.emplace_back(glm::vec3(-1.f, 0.f, 0.f));
 
-            vertices.emplace_back(glm::vec3(1.f, prevY, prevZ));
-            vertices.emplace_back(glm::vec3(1.f, y, z));
-            vertices.emplace_back(glm::vec3(1.f, 0.f, 0.f));
+//            vertices.emplace_back(glm::vec3(1.f, prevY, prevZ));
+//            vertices.emplace_back(glm::vec3(1.f, y, z));
+//            vertices.emplace_back(glm::vec3(1.f, 0.f, 0.f));
+            vertices.emplace_back(glm::vec3(0.f, 0.f, 0.f));
+            vertices.emplace_back(glm::vec3(0.f, 0.f, 0.f));
+            vertices.emplace_back(glm::vec3(0.f, 0.f, 0.f));
 
             normals.emplace_back(glm::vec3(1.f, 0.f, 0.f));
             normals.emplace_back(glm::vec3(1.f, 0.f, 0.f));
@@ -97,35 +105,24 @@ void Cylinder::makeCylinder(
     }
     std::vector col(vertices.size(), aColor);
 
-    m_mesh.positions = std::move(vertices);
-    m_mesh.colors = std::move(col);
-    m_mesh.normals = std::move(normals);
-
-//    return m_mesh;
+    m_coneMesh.positions = std::move(vertices);
+    m_coneMesh.colors = std::move(col);
+    m_coneMesh.normals = std::move(normals);
 }
-// MeshData Cylinder::makeUpdatedCylinder(
-//        bool cap,
-//        int count,
-//        glm::vec3 color,
-//        glm::mat4 transformations
-//) {
-//     makeCylinder(cap, count, color, transformations);
-//}
-MeshData Cylinder::getMesh()
+MeshData Cone::getMesh()
 {
-    return m_mesh;
+    return m_coneMesh;
 }
-glm::vec3 Cylinder::getColor()
+glm::vec3 Cone::getColor()
 {
-//    return glm::vec3(m_mesh.colors[0]);
-return m_color;
+    return m_color;
 }
-void Cylinder
+void Cone
 ::setColor(const glm::vec3 newCol)
 {
     m_color = newCol;
 }
-void Cylinder
+void Cone
 ::updateCap()
 {
     if (m_cap != m_change)
@@ -135,53 +132,48 @@ void Cylinder
         updateVAO();
     }
 }
-MeshData Cylinder::updateColor(glm::vec4 newCol)
+MeshData Cone::updateColor(glm::vec4 newCol)
 {
-    std::vector newColors(m_mesh.positions.size(), newCol);
+    std::vector newColors(m_coneMesh.positions.size(), newCol);
     MeshData mesh = {
-            m_mesh.positions,
+            m_coneMesh.positions,
             std::move(newColors),
-            m_mesh.normals,
+            m_coneMesh.normals,
     };
-    m_mesh = mesh;
+    m_coneMesh = mesh;
     return mesh;
 }
-void Cylinder::updateMesh()
+void Cone::updateMesh()
 {
-    makeCylinder(m_cap, m_count, m_color, m_transformations);
+    makeCone(m_cap, m_count, m_color, m_transformations);
 }
-void Cylinder::createVAO()
+void Cone::createVAO()
 {
-//    m_mesh.positions.clear();
-//    m_mesh.colors.clear();
-//    m_mesh.normals.clear();
-   Mesh::createVAO(m_mesh);
+    m_VAO = Mesh::createVAO(m_coneMesh);
 }
-//void Cylinder::updateVAO(MeshData mesh) {
+void Cone::updateVAO() {
 //    glDeleteBuffers(1, &m_VAO);
-//    GLuint v = Mesh::createVAO(mesh);
-//    glBindVertexArray(v);
-//}
-void Cylinder::updateVAO() {
-//    glDeleteBuffers(1, &m_VAO);
-    m_VAO = Mesh::createVAO(m_mesh);
+    m_VAO = Mesh::createVAO(m_coneMesh);
     glBindVertexArray(m_VAO);
 //    m_VAO = v;
 }
-GLuint Cylinder::returnVAO()
+GLuint Cone::returnVAO()
 {
     createVAO();
     return m_VAO;
 }
-size_t Cylinder::returnVertexCount()
+size_t Cone::getVertexCount()
 {
-    return m_mesh.positions.size();
+    return m_coneMesh.positions.size();
 }
 
-bool Cylinder::getCap() const
+bool Cone::getCap() const
 {
     return m_cap;
 }
 
-Cylinder::~Cylinder()
-= default;
+Cone::~Cone() {
+    m_coneMesh.colors.clear();
+    m_coneMesh.normals.clear();
+    m_coneMesh.positions.clear();
+};

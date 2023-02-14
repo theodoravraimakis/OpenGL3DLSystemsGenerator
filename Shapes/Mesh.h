@@ -5,9 +5,16 @@
 #ifndef FINALYEARPROJECT_MESH_H
 #define FINALYEARPROJECT_MESH_H
 
-#include "glm/glm.hpp"
+#define GLFW_INCLUDE_NONE
+
 #include "glad/glad.h"
+#include <GLFW/glfw3.h>
+
+#include "glm/glm.hpp"
+#include <glm/gtc/matrix_transform.hpp>
+
 #include <vector>
+
 
 struct MeshData
 {
@@ -19,7 +26,18 @@ struct MeshData
 class Mesh {
 public:
     static GLuint createVAO(MeshData const&);
+    static MeshData concatenate(MeshData aM, MeshData const& aN );
+    friend class coordianteAxesArrows;
+    inline static void clearMesh(MeshData mesh) {
+        mesh.colors.clear();
+        mesh.normals.clear();
+        mesh.positions.clear();
+    }
 };
+
+//class Shape {
+//
+//};
 
 
 #endif //FINALYEARPROJECT_MESH_H

@@ -17,6 +17,9 @@
 
 #include "glm/glm.hpp"
 
+#include "../Error/Error.h"
+#include "../Checkpoint/Checkpoint.h"
+
 class Shader {
 public:
     struct ShaderSource
@@ -48,7 +51,6 @@ public:
     void setVec4(const std::string &name, const glm::vec4 &value) const;
     void setMat3(const std::string &name, const glm::mat3 &mat) const;
     void setMat4(const std::string &name, const glm::mat4 &mat) const;
-
 
 
 private:

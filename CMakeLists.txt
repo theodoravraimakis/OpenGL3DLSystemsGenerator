@@ -2,9 +2,9 @@ cmake_minimum_required(VERSION 3.18)
 project(FinalYearProject)
 set(CMAKE_CXX_STANDARD 17)
 
-add_subdirectory(third_party/glad)
-add_subdirectory(third_party/imgui)
-add_subdirectory(third_party/learnopengl)
+add_subdirectory(ThirdParty/glad)
+add_subdirectory(ThirdParty/imgui)
+add_subdirectory(ThirdParty/learnopengl)
 
 include(FetchContent)
 FetchContent_Declare(
@@ -34,8 +34,10 @@ add_executable(FinalYearProject main.cpp
                                 Checkpoint/Checkpoint.cpp
                                 Render/Render.cpp
                                 Camera/ArcballCamera.cpp
-                                Cylinder/Mesh.cpp
-                                Cylinder/Cylinder.cpp
+                                Shapes/Mesh.cpp
+                                Shapes/Cylinder.cpp
+                                Shapes/Cone.cpp
+                                Turtle/Turtle.cpp
                 )
 
 target_link_libraries(FinalYearProject glm glfw glad imgui rapidobj

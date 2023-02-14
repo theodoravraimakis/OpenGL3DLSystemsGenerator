@@ -9,11 +9,8 @@
 
 #include <cstdio>
 
-#include "glad/glad.h"
-#include "GLFW/glfw3.h"
-
-#include "../Error/Error.h"
-#include "../Checkpoint/Checkpoint.h"
+//#include "glad/glad.h"
+//#include "GLFW/glfw3.h"
 
 
 namespace

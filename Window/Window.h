@@ -8,7 +8,7 @@
 
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
-#include "../Config.h"
+#include "../Config/Config.h"
 
 class Window {
 public:

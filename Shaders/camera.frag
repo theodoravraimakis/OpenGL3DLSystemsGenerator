@@ -2,8 +2,9 @@
 
 in vec3  normal;
 in vec3 fragPos;
+in vec4 color;
 
-uniform vec3 color;
+//uniform vec3 color;
 uniform vec3 lightColor;
 uniform vec3 lightPosition;
 uniform float ambientStrength;
@@ -21,7 +22,7 @@ void main()
    float diffuseImpact = max(dot(fragNormal, lightDirection), 0.0);
    vec3 diffuse = diffuseImpact * lightColor;
 
-   vec3 finalColor = (ambient + diffuse) * color;
+   vec3 finalColor = (ambient + diffuse) * color.xyz;
 
    fragColor = vec4(finalColor, 1.0);
 }
