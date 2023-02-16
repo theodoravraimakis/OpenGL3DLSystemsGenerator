@@ -28,6 +28,10 @@ ArcballCamera::ArcballCamera
     m_proj = getUpdatedProjMatrix(
             glm::radians(m_FOV)
     );
+
+    m_lastCursorPos = glm::fvec2(0.0f);
+    m_currentCursorPos = glm::fvec2(0.0f);
+    m_targetPos = glm::fvec4(0.0f);
 }
 
 ArcballCamera::~ArcballCamera() = default;
@@ -74,7 +78,7 @@ glm::mat4 ArcballCamera::getUpdatedProjMatrix(
     // GLM was designed for OpenGl, where the Y coordinate of the clip coord. is
     // inverted. To compensate for that, we have to flip the sign on the scaling
     // factor of the Y axis.
-    proj[1][1] *= -1;
+//    proj[1][1] *= -1; //TODO
 
     return proj;
 }

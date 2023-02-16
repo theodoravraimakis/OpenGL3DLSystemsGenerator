@@ -18,12 +18,26 @@ public:
             glm::vec3 color,
             glm::mat4 transformations
             );
+    Cylinder(
+            bool cap,
+            float diameter,
+            int count,
+            glm::vec3 color,
+            glm::mat4 transformations
+    );
     void makeCylinder(
             bool cap,
             int count,
             glm::vec3 color,
             glm::mat4 transformations
             );
+    void makeCylinderDiameter(
+            bool cap,
+            float diameter,
+            int count,
+            glm::vec3 color,
+            glm::mat4 transformations
+    );
 
     MeshData getMesh();
     glm::vec3& getColor();

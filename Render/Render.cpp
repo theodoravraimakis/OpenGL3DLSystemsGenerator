@@ -18,7 +18,7 @@ void Render::run()
             glm::fvec4(0.0f, 0.0f, 5.0f, 1.0f),
             glm::fvec4(0.0f),
 //            45.0f
-            100.0f
+            90.0f
     );
     std::vector<Shader::ShaderSource> s = {
             { GL_VERTEX_SHADER, "../Shaders/camera.vert" },
@@ -26,7 +26,9 @@ void Render::run()
     };
     m_shader = std::make_shared<Shader>(s);
     m_cylinder = std::make_shared<Cylinder>(
-            true, 128, glm::vec3(0.48f, 0.33f, 0.25f), glm::mat4(1.0f)
+            true, 128, glm::vec3(0.48f, 0.33f, 0.25f),
+    glm::rotate(glm::mat4(1.0f), kPi_/2, glm::vec3(0.0f, 0.0f, 1.0f)) *
+            glm::scale(glm::mat4(1.0f), glm::vec3(4.f, 0.5f, 0.5f))
             );
     m_light = std::make_shared<Light>();
     m_turtle = std::make_shared<Turtle>();
@@ -129,107 +131,27 @@ void Render::handleInput() {
 void Render::mainLoop()
 {
 
-//    Shader ourShader({
-//                             { GL_VERTEX_SHADER, "../shaders/camera.vert" },
-//                             { GL_FRAGMENT_SHADER, "../shaders/camera.frag" }
-//                     });
-
-
-//// set up vertex data (and buffer(s)) and configure vertex attributes
-// ------------------------------------------------------------------
-//    float vertices[] = {
-//            -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-//            0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-//            0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-//            0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-//            -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-//            -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-//
-//            -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-//            0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-//            0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-//            0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-//            -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-//            -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-//
-//            -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-//            -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-//            -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-//            -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-//            -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-//            -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-//
-//            0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-//            0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-//            0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-//            0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-//            0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-//            0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-//
-//            -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-//            0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-//            0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-//            0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-//            -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-//            -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-//
-//            -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-//            0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-//            0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-//            0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-//            -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-//            -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
-//    };
-//// world space positions of our cubes
-//    glm::vec3 cubePositions[] = {
-//            glm::vec3( 0.0f,  0.0f,  0.0f),
-//            glm::vec3( 2.0f,  5.0f, -15.0f),
-//            glm::vec3(-1.5f, -2.2f, -2.5f),
-//            glm::vec3(-3.8f, -2.0f, -12.3f),
-//            glm::vec3( 2.4f, -0.4f, -3.5f),
-//            glm::vec3(-1.7f,  3.0f, -7.5f),
-//            glm::vec3( 1.3f, -2.0f, -2.5f),
-//            glm::vec3( 1.5f,  2.0f, -2.5f),
-//            glm::vec3( 1.5f,  0.2f, -1.5f),
-//            glm::vec3(-1.3f,  1.0f, -1.5f)
-//    };
-//
-//    unsigned int VBO, VAO;
-//    glGenVertexArrays(1, &VAO);
-//    glGenBuffers(1, &VBO);
-//
-//    glBindVertexArray(VAO);
-//
-//    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-//    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-//
-//// position attribute
-//    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-//    glEnableVertexAttribArray(0);
-//// texture coord attribute
-//    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-//    glEnableVertexAttribArray(1);
-
-//    Cylinder he();
     auto rootCylinder = m_cylinder->getMesh();
-//auto rootCylinder = m_cylinder->getMesh();
     size_t vertexCountRootCylinder = m_cylinder->getVertexCount();
     GLuint root = m_cylinder->getVAO();
-//    GLuint root = m_cylinder->getVAO();
-    glBindVertexArray(root);
+//    glBindVertexArray(root);
 
 //    auto axesArrowsMesh = m_coordsAxis->m_axesArrows;
 //    GLuint x = m_coordsAxis->m_VAO;
 //    size_t vertexCountRootCylinder = axesArrowsMesh.positions.size();
 //    glBindVertexArray(x);
-//Cone heh(true, 16, glm::vec3(0.0f),glm::mat4(1.0f));
-//    auto c = heh.getMesh();
-//    heh.createVAO();
-//    size_t vertexCountRootCylinder = c.positions.size();
-////    GLuint v = heh.getVertexCount();
-//    glBindVertexArray(heh.returnVAO());
+
+Cylinder heh(true, 5.0f, 16, glm::vec3(1.0f),
+             glm::rotate(glm::mat4(1.0f), kPi_/2, glm::vec3(0.0f, 0.0f, 1.0f)) *
+             glm::scale(glm::mat4(1.0f), glm::vec3(4.f, 0.5f, 0.5f)));
+    auto c = heh.getMesh();
+    heh.createVAO();
+    size_t v = heh.getVertexCount();
+
 
     glUseProgram(m_shader->programId());
+
+    m_turtle->computeFinalWorldM();
 
     while (!m_window->isWindowClosed()) {
         m_window->resize();
@@ -247,29 +169,26 @@ void Render::mainLoop()
         m_shader->setMat4("projection", projection);
         glm::mat4 view = m_camera->getViewM();
         m_shader->setMat4("view", view);
-//                 render boxes
-//        for (int i = 0; i < 10; i++)
-//        {
-//
-//            // calculate the model matrix for each object and pass it to shader before drawing
-//            glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
-//            model = glm::translate(model, cubePositions[i]);
-//            float angle = 20.0f * i;
-//            model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
-//            ourShader.setMat4("model", model);
-////            ourShader.setVec4("ourColor", glm::vec4(0.88f, 0.33f, 0.25f, 1.0f));
-//
-//
-//            glDrawArrays(GL_TRIANGLES, 0, 36);
-//        }
+
+
+
+//        glm::mat4 model = glm::mat4(1.0f);
 //        m_coordsAxis->draw();
 
-//        glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
-//        model = glm::translate(model, glm::vec3( 0.0f,  0.0f,  0.0f));
-//        model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1.0f, 1.0f, 1.0f));
+//        glBindVertexArray(heh.getVAO());
 //        m_shader->setMat4("model", model);
+//        glDrawArrays(GL_TRIANGLES, 0, 3 * v);
+//
+//
+//        model = glm::translate(model, glm::vec3( 5.0f,  0.0f,  0.0f));
+//        glBindVertexArray(root);
+//        m_shader->setMat4("model", model);
+//        glDrawArrays(GL_TRIANGLES, 0, 3 * vertexCountRootCylinder);
 
-//        m_shader->setVec3("color", m_cylinder->getColor());
+
+
+
+
 
 
 
@@ -278,21 +197,6 @@ void Render::mainLoop()
         m_shader->setVec3("lightPosition", m_light->m_lpos);
         m_shader->setFloat("ambientStrength", m_light->m_lambient);
 
-
-////        glm::mat3 normalMatrix = glm::mat3(inverse(glm::mat4(1.0f)));
-////        ourShader.setMat3("normalMatrix", normalMatrix);
-
-//        glDrawArrays(GL_TRIANGLES, 0, 3 * vertexCountRootCylinder);
-//        glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
-//        glDrawArrays(GL_TRIANGLES, 0, 3 * vertexCountRootCylinder);
-
-        m_turtle->computeFinalWorldM();
-//        std::vector<glm::mat4> models = m_turtle->returnFinalWorldM();
-//        for (unsigned int i = 1; i < models.size(); i++)
-//        {
-//            m_shader->setMat4("model", models[i]);
-//            glDrawArrays(GL_TRIANGLES, 0, vertexCountRootCylinder * 3);
-//        }
 
 
         m_turtle->draw(m_shader, m_cylinder);
@@ -308,8 +212,7 @@ void Render::mainLoop()
         m_window->swapBuffers();
 
     }
-//    glDeleteVertexArrays(1, &VAO);
-//    glDeleteBuffers(1, &VBO);
+
     m_UI->imguiDestroy();
 }
 void Render::destroy()

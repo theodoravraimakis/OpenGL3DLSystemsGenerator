@@ -38,6 +38,9 @@ Window::Window(
     glfwMakeContextCurrent(window);
     gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
     glEnable(GL_DEPTH_TEST);
+    int screenWidth, screenHeight;
+    glfwGetFramebufferSize( window, &screenWidth, &screenHeight );
+    glViewport( 0, 0, screenWidth, screenHeight );
 }
 
 GLFWwindow* Window::get()
@@ -47,25 +50,25 @@ GLFWwindow* Window::get()
 
 void Window::resize() //
 {
-    {
-        glfwGetFramebufferSize(window, &nwidth, &nheight);
-
-        fbwidth = float(nwidth);
-        fbheight = float(nheight);
-
-        if (0 == nwidth || 0 == nheight)
-        {
-            // Window minimized? Pause until it is unminimized.
-            // This is a bit of a hack.
-            do
-            {
-                glfwWaitEvents();
-                glfwGetFramebufferSize(window, &nwidth, &nheight);
-            } while (0 == nwidth || 0 == nheight);
-        }
-
-        glViewport(0, 0, (GLsizei)fbwidth, (GLsizei)fbheight);
-    }
+//    {
+//        glfwGetFramebufferSize(window, &nwidth, &nheight);
+//
+//        fbwidth = float(nwidth);
+//        fbheight = float(nheight);
+//
+//        if (0 == nwidth || 0 == nheight)
+//        {
+//            // Window minimized? Pause until it is unminimized.
+//            // This is a bit of a hack.
+//            do
+//            {
+//                glfwWaitEvents();
+//                glfwGetFramebufferSize(window, &nwidth, &nheight);
+//            } while (0 == nwidth || 0 == nheight);
+//        }
+//
+//        glViewport(0, 0, (GLsizei)fbwidth, (GLsizei)fbheight);
+//    }
 
 }
 int Window::getWidth()
