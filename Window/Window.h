@@ -12,16 +12,11 @@
 
 class Window {
 public:
-    Window(
-//            int width,
-//            int height,
-//            const char* title
-    );
+    Window();
 
     ~Window();
 
     GLFWwindow* get();
-    float fbwidth, fbheight;
     int nwidth, nheight;
     void resize();
     int getWidth();
@@ -35,6 +30,11 @@ public:
     void processInput();
     void swapBuffers();
     void pollEvents();
+    float& getDeltaTime();
+
+    float currentFrame = 0.0f;
+    float deltaTime = 0.0f;	// time between current frame and last frame
+    float lastFrame = 0.0f;
 
 private:
 

@@ -23,10 +23,10 @@ public:
             const std::shared_ptr<Shape> &shape
             );
 
-private:
+//private:
     std::vector<glm::mat4> worldMatrices {
         glm::mat4(1.0f),
-        glm::translate(glm::mat4(1.0f), glm::vec3( 0.f, 0.f, 0.f)),
+        glm::translate(glm::mat4(1.0f), glm::vec3( 0.f, -5.f, 0.f)),
     };
 
     std::vector<int> parentVectors {

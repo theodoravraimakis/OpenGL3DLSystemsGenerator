@@ -8,13 +8,10 @@
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 
-//#include "imGuIZMOquat.h"
-
 UI::UI(
         const std::shared_ptr<Window>& window,
         const std::shared_ptr<ArcballCamera>& camera,
-        const std::shared_ptr<Cylinder>& cylinder,
-//        const std::shared_ptr<Shader>& shader
+//        const std::shared_ptr<Cylinder>& cylinder,
         const std::shared_ptr<Light> &light
 )
 {
@@ -27,34 +24,17 @@ UI::UI(
     ImGui::StyleColorsDark();
 
     ImGui_ImplGlfw_InitForOpenGL(window->get(), true);
-//    ImGui_ImplGlfw_InitForOpenGL(window, false);
     ImGui_ImplOpenGL3_Init();
 
 };
 UI::~UI() {}
 
-//void imguiInitialisation (GLFWwindow* window) {
-//// imgui initialisation
-//    IMGUI_CHECKVERSION();
-//    ImGui::CreateContext();
-//    ImGuiIO &io = ImGui::GetIO();
-//    (void) io;
-//
-//    ImGui::StyleColorsDark();
-//
-//    ImGui_ImplGlfw_InitForOpenGL(window, true);
-////    ImGui_ImplGlfw_InitForOpenGL(window, false);
-//    ImGui_ImplOpenGL3_Init();
-//}
 void UI::imguiDemo()
 {
     // temporary imgui vars
     bool show_demo_window = true;
     bool show_another_window = false;
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-//    ImGui_ImplOpenGL3_NewFrame();
-//    ImGui_ImplGlfw_NewFrame();
-//    ImGui::NewFrame();
 
     // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
     if (show_demo_window)
@@ -95,30 +75,14 @@ void UI::imguiDemo()
 void UI::imguiDraw(const std::shared_ptr<ArcballCamera> &camera,
                    const std::shared_ptr<Shape> &shape,
                    const std::shared_ptr<Light> &light
-//                   const std::shared_ptr<Shader> &shader
 )
 {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
 
-//        imguiDemo();
-//    ImGui::Separator();
-//    ImGui::Begin(
-//            "Models",
-//            NULL
-//    );
-    static bool showCameraMenu = false;
-//    ImGui::Separator();
     imguiCamera(camera);
 
-//    }
-//    ImGui::BeginMenuBar();
-//    {
-////        ImGui::BeginMenu("Parameters menu")
-////            ImGui::MenuItem("Camera menu bar", NULL, &showCameraMenu);
-////            ImGui::TreeNode("Camera"); imguiCamera(camera);ImGui::TreePop();
-////            ImGui::Separator();
     if(ImGui::TreeNode("Cylinder")) {
         shapeCap(
                 shape
@@ -127,31 +91,11 @@ void UI::imguiDraw(const std::shared_ptr<ArcballCamera> &camera,
         ImGui::TreePop();
         ImGui::Separator();
     }
-            changeLight(light);
-////        ImGui::EndMenu();
-//        ImGui::EndMenuBar();
-//    }
-
-//ImGui::End();
+    changeLight(light);
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
-void UI::parametersMenu()
-{
-    static bool showCameraMenu = false;
-    static bool showLightMenu = false;
-    static bool showCylinderMenu = false;
-    if (ImGui::BeginMenuBar())
-    {
-        if (ImGui::BeginMenu("Parameters menu")) {
-            ImGui::MenuItem("Camera menu bar", NULL, &showCameraMenu);
-            ImGui::MenuItem("Light menu bar", NULL, &showLightMenu);
-            ImGui::MenuItem("Cylinder menu bar", NULL, &showCylinderMenu);
-            ImGui::EndMenu();
-        }
-        ImGui::EndMenuBar();
-    }
-}
+
 void UI::imguiDestroy()
 {
     ImGui_ImplOpenGL3_Shutdown();
@@ -175,6 +119,7 @@ bool UI::isClicked()
         return true;
     return false;
 }
+
 bool UI::clicked()
 {
     if (ImGui::GetMouseClickedCount(0) == 1 ||
@@ -188,57 +133,53 @@ bool UI::clicked()
 
 void UI::imguiCamera(const std::shared_ptr<ArcballCamera> &camera)
 {
-
-
-
-//
-//    glm::vec3 pos = camera->getPositionV();
-//
-//    const std::string& name = "haha";
-//    const std::vector<std::string> sliderNames =
-//            {
-//                    "X##TRANSLATION::" + name,
-//                    "Y##TRANSLATION::" + name,
-//                    "Z##TRANSLATION::" + name
-//            };
-//    std::vector<float*> values =
-//            {
-//                    &pos.x,
-//                    &pos.y,
-//                    &pos.z
-//            };
-//    for (size_t i = 0; i < sliderNames.size(); i++)
-//    {
-//    ImGui::SliderFloat(
-//            sliderNames[i].c_str(),
-//            values[i],
-//            -10.0f,
-//            10.0f
-//    );}
-//    camera->setPos(pos);
-//ImGui::Begin("Camera");
     if (ImGui::TreeNode("Camera")) {
-        float f = camera->getFOV();
+//
+    glm::vec4 targetPos = camera->getTargetPos();
+    glm::vec4 pos = camera->getPos();
+    float f = camera->getFOV();
+//
+    const std::string& name1 = "haha";
+    const std::vector<std::string> sliderNames =
+            {
+                    "X##TRANSLATION::" + name1,
+                    "Y##TRANSLATION::" + name1,
+                    "Z##TRANSLATION::" + name1
+            };
+    std::vector<float*> values =
+            {
+                    &targetPos.x,
+                    &targetPos.y,
+                    &targetPos.z
+            };
+    for (size_t i = 0; i < sliderNames.size(); i++)
+    {
+        ImGui::SliderFloat(
+            sliderNames[i].c_str(),
+            values[i],
+            -100.0f,
+            100.0f
+    );
+    }
+
+
         ImGui::SliderFloat(
                 "FOV",
                 &f,
                 0.0f,
                 200.0f
         );
-        camera->setFOV(f);
 
         const std::string& name = "Camera";
-        const std::vector<std::string> sliderNames =
+        const std::vector<std::string> sliderNames1 =
                 {
                         "X POSITION of " + name,
                         "Y POSITION of " + name,
                         "Z POSITION of " + name
                 };
 
-        glm::vec4 pos = camera->m_pos;
 
         std::vector<float*> position = {
-                &pos.w,
                 &pos.x,
                 &pos.y,
                 &pos.z
@@ -246,72 +187,76 @@ void UI::imguiCamera(const std::shared_ptr<ArcballCamera> &camera)
         for (size_t i = 0; i < sliderNames.size(); i++)
         {
             ImGui::SliderFloat(
-                    sliderNames[i].c_str(),
+                    sliderNames1[i].c_str(),
                     position[i],
                     -100.0f,
                     100.0f
             );
         }
         camera->setPos(pos);
+        camera->setTargetPos(targetPos);
+        camera->setFOV(f);
+
 
         ImGui::TreePop();
         ImGui::Separator();
     }
-//    ImGui::End();
-
-//    ImGui::Render();
-//    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
-//void UI::setImguiVars() {
-//    m_cap = cy
-//}
+
 void UI::shapeCap(
         const std::shared_ptr<Shape> &shape
-//                       const std::shared_ptr<Shader> &shader
 )
 {
-//        glm::vec3 c = cylinder->getColor();
-//        ImGui::ColorEdit3(
-//                "color",
-//                (float *) &c
-//        );
-//    if(isCursorPositionInGUI() && isClicked()) {
-//        std::cout << "true";
-//        cylinder->setColor(c);
-//    }
     bool* change = shape->changeCap();
 
     ImGui::Checkbox("Cap on", change);
     if (*shape->getCap() != *shape->changeCap()) {
-        shape->updateCap(*change);
+        shape->setCap(*change);
         std::cout << "vio" << std::endl;
     }
 
+//shape->setMesh();
+
+//MeshData h = shape->getMesh();
+//    shape->setMesh(h);
+
+    const char* items[] = { "Cylinder", "Cone"};
+    static const char* current_item = NULL;
+
+    if (ImGui::BeginCombo("##combo", current_item)) // The second parameter is the label previewed before opening the combo.
+    {
+        for (int n = 0; n < IM_ARRAYSIZE(items); n++)
+        {
+            bool is_selected = (current_item == items[n]); // You can store your selection however you want, outside or inside your objects
+            if (ImGui::Selectable(items[n], is_selected)) {
+                current_item = items[n];
+//                shape->changeShape(current_item);
+//                shape->getShape();
+            }
+            if (is_selected)
+                ImGui::SetItemDefaultFocus();   // You may set the initial focus when opening the combo (scrolling + for keyboard navigation support)
+        }
+//        if (shape->getShape() == 0) shape->setMesh()
+//        if (current_item == items[0])
+//            std::cout<<current_item;
+        ImGui::EndCombo();
+    }
 
 }
-void UI::changeColor(const std::shared_ptr<Shape> &shape) //
+
+void UI::changeColor(const std::shared_ptr<Shape> &shape)
 {
-
-//    glm::vec3 c = shape->getColor();
-//    ImGui::ColorEdit3(
-//            "color",
-//            (float *) &c
-//    );
-//    shape->setColor(c);
-
     glm::vec3 c = shape->getColor();
 
     ImGui::ColorEdit3(
             "Color",
             glm::value_ptr(c)
     );
-//    std::cout << glm::value_ptr(c) << std::endl;
+
     if (shape->getColor() != c) {
         shape->setColor(c);
         std::cout << "vio" << std::endl;
     }
-
-
 
 }
 

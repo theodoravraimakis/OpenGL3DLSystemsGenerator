@@ -15,6 +15,11 @@
 
 #include <vector>
 
+#include "iostream"
+#include "string"
+
+
+constexpr float kPi_ = 3.1415926f;
 
 struct MeshData
 {
@@ -35,15 +40,94 @@ public:
     }
 };
 
+enum class ShapeType
+{
+    CYLINDER = 0,
+    CONE = 1
+};
+
+
 class Shape {
 public:
-    virtual size_t getVertexCount() = 0;
-    virtual GLuint getVAO() = 0;
-    virtual glm::vec3& getColor() = 0;
-    virtual void setColor(glm::vec3& newCol) = 0;
-    virtual bool* changeCap() = 0;
-    virtual void updateCap(bool newCap) = 0;
-    virtual bool* getCap() = 0;
+    Shape(const ShapeType& type)
+    {
+        m_cap = true;
+        m_diameter = 1.0f;
+        m_count = 128;
+        m_color = glm::vec3(0.48f, 0.33f, 0.25f);
+        m_transformations = glm::rotate(glm::mat4(1.0f), kPi_/2, glm::vec3(0.0f, 0.0f, 1.0f)) *
+                            glm::scale(glm::mat4(1.0f), glm::vec3(4.f, 0.5f, 0.5f));
+    };
+    ~Shape() {
+        m_mesh.colors.clear();
+        m_mesh.normals.clear();
+        m_mesh.positions.clear();
+    };
+    virtual void make()
+    {};
+    const ShapeType getType() const
+    {
+        return m_type;
+    }
+    MeshData getMesh()
+    {
+        return m_mesh;
+    }
+    glm::vec3& getColor()
+    {
+        return m_color;
+    }
+    GLuint getVAO()
+    {
+        createVAO();
+        return m_VAO;
+    };
+    void createVAO()
+    {
+        m_VAO = m.createVAO(m_mesh);
+    }
+    size_t getVertexCount()
+    {
+        return m_mesh.positions.size();
+    }
+//    virtual void setColor(glm::vec3& newCol) = 0;
+    bool* getCap()
+    {
+        return &m_cap;
+    }
+    bool* changeCap() {
+        return &m_change;
+    }
+    void setCap(bool newCap)
+    {
+        if (m_cap != newCap)
+        {
+            m_cap = newCap;
+            make();
+            getVAO();
+        }
+    }
+    void setColor(glm::vec3& newCol)
+    {
+        if (m_color != newCol)
+        {
+            m_color = newCol;
+            make();
+            getVAO();
+        }
+    }
+protected:
+    ShapeType   m_type;
+    bool        m_cap;
+    float       m_diameter;
+    int         m_count;
+    glm::vec3   m_color;
+    glm::mat4   m_transformations;
+    GLuint      m_VAO;
+    MeshData    m_mesh;
+    Mesh        m;
+
+    bool        m_change;
 };
 
 

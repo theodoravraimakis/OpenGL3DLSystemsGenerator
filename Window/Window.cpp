@@ -4,19 +4,9 @@
 
 #include "Window.h"
 #include <iostream>
+//
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
-{
-    // make sure the viewport matches the new window dimensions; note that width and
-    // height will be significantly larger than specified on retina displays.
-    glViewport(0, 0, width, height);
-}
-
-Window::Window(
-//        int width,
-//        int height,
-//        const char* title
-) {
+Window::Window() {
     glfwInit();
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
@@ -38,9 +28,10 @@ Window::Window(
     glfwMakeContextCurrent(window);
     gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
     glEnable(GL_DEPTH_TEST);
-    int screenWidth, screenHeight;
-    glfwGetFramebufferSize( window, &screenWidth, &screenHeight );
-    glViewport( 0, 0, screenWidth, screenHeight );
+
+    glfwGetFramebufferSize(window, &nwidth, &nheight);
+    glViewport( 0, 0, nwidth, nheight );
+    lastFrame = currentFrame;
 }
 
 GLFWwindow* Window::get()
@@ -50,35 +41,17 @@ GLFWwindow* Window::get()
 
 void Window::resize() //
 {
-//    {
-//        glfwGetFramebufferSize(window, &nwidth, &nheight);
-//
-//        fbwidth = float(nwidth);
-//        fbheight = float(nheight);
-//
-//        if (0 == nwidth || 0 == nheight)
-//        {
-//            // Window minimized? Pause until it is unminimized.
-//            // This is a bit of a hack.
-//            do
-//            {
-//                glfwWaitEvents();
-//                glfwGetFramebufferSize(window, &nwidth, &nheight);
-//            } while (0 == nwidth || 0 == nheight);
-//        }
-//
-//        glViewport(0, 0, (GLsizei)fbwidth, (GLsizei)fbheight);
-//    }
-
+    glfwGetFramebufferSize(window, &nwidth, &nheight);
+    glViewport(0, 0, (GLsizei) nwidth, (GLsizei) nheight);
 }
-int Window::getWidth()
-{
-    return nwidth;
-}
-int Window::getHeight()
-{
-    return nheight;
-}
+//int Window::getWidth()
+//{
+//    return nwidth;
+//}
+//int Window::getHeight()
+//{
+//    return nheight;
+//}
 void Window::clearScreen()
 {
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -94,7 +67,9 @@ void Window::closeWindow() const
 {
     glfwSetWindowShouldClose(window, true);
 }
-
+void framebufferSizeCallback(GLFWwindow* window, int width, int height) {
+    glViewport(0, 0, width, height);
+}
 void Window::processInput()
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
@@ -108,6 +83,9 @@ void Window::swapBuffers()
 
 void Window::pollEvents()
 {
+    currentFrame = static_cast<float>(glfwGetTime());
+    deltaTime = currentFrame - lastFrame;
+
     glfwPollEvents();
 }
 
@@ -116,6 +94,12 @@ void Window::pollEvents()
 //    glfwDestroyWindow(window);
 //    glfwTerminate();
 //}
+
+float& Window::getDeltaTime()
+{
+    return deltaTime;
+}
+
 
 Window::~Window()
 {

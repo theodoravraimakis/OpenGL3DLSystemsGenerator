@@ -20,14 +20,8 @@ public:
     void run();
 private:
     void mainLoop();
-//    static void mousePositionCallback(GLFWwindow* window, double xpos, double ypos);
-//    static void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
-    static void scrollCallback(
-            GLFWwindow* window,
-            double xoffset,
-            double yoffset
-    );
-    static void r(GLFWwindow* aWindow, int aKey, int, int aAction, int);
+    static void scrollCallback(GLFWwindow* window, double xoffset, double yoffset);
+    static void reloadShader(GLFWwindow* aWindow, int aKey, int, int aAction, int);
     void handleInput();
     void configureCallbacks();
     void destroy();
@@ -36,12 +30,19 @@ private:
     std::unique_ptr<UI>                             m_UI;
     std::shared_ptr<ArcballCamera>                  m_camera;
     std::shared_ptr<Cylinder>                       m_cylinder;
+    std::shared_ptr<Cone>                           m_cone;
     std::shared_ptr<Shader>                         m_shader;
     std::shared_ptr<Light>                          m_light;
     std::shared_ptr<Turtle>                         m_turtle;
     std::shared_ptr<coordinateAxesArrows>           m_coordsAxis;
+    std::shared_ptr<Shape>                          m_shape;
 
     bool m_isMouseInMotion;
+    float ratio;
+//    inline static float fov = 50.0f;
+    inline static float fov;
+    inline static glm::vec3 position;
+
 
 };
 
