@@ -12,6 +12,7 @@
 #include "../Shapes/Cylinder.h"
 #include "../Shapes/Cone.h"
 #include "../Shader/Shader.h"
+#include <memory>
 
 
 class Turtle {
@@ -37,8 +38,8 @@ public:
     std::vector<glm::mat4> finalWorldMatrices;
 
     std::shared_ptr<Shader>                         m_shader;
-    std::shared_ptr<Cylinder>                       m_cylinder;
-    std::shared_ptr<Cone>                           m_cone;
+//    std::shared_ptr<Cylinder>                       m_cylinder;
+//    std::shared_ptr<Cone>                           m_cone;
 };
 
 

@@ -134,6 +134,8 @@ bool UI::clicked()
 void UI::imguiCamera(const std::shared_ptr<ArcballCamera> &camera)
 {
     if (ImGui::TreeNode("Camera")) {
+
+        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 //
     glm::vec4 targetPos = camera->getTargetPos();
     glm::vec4 pos = camera->getPos();

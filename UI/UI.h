@@ -13,7 +13,7 @@
 #include "../Shapes/Cylinder.h"
 #include "../Shader/Shader.h"
 #include "../Config/Config.h"
-#include <glm/gtc/type_ptr.hpp>
+#include <memory>
 
 class UI {
 
