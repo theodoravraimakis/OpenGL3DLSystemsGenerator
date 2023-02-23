@@ -6,7 +6,9 @@
 
 
 
-void Turtle::computeFinalWorldM() {
+void Turtle::computeFinalWorldM(
+        const std::shared_ptr<Shape> &shape
+        ) {
     treeTest();
 
     finalWorldMatrices = {
@@ -18,6 +20,8 @@ void Turtle::computeFinalWorldM() {
         finalWorldMatrices[i] = finalWorldMatrices[parentVectors[i]] * worldMatrices[i];
     }
 
+    shape->createVAO();
+
 }
 
 void Turtle::draw(
@@ -25,6 +29,7 @@ void Turtle::draw(
         const std::shared_ptr<Shape> &shape
         ) {
     glBindVertexArray(shape->getVAO());
+//    glBindVertexArray(c->getVAO());
     for (unsigned int i = 1; i < finalWorldMatrices.size(); i++)
     {
         shader->setMat4("model", finalWorldMatrices[i]);

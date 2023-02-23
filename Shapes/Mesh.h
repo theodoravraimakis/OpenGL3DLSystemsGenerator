@@ -51,6 +51,9 @@ class Shape {
 public:
     Shape(const ShapeType& type)
     {
+        m_type = type;
+//        m_changeType = m_type;
+//        m_change = m_cap;
         m_cap = true;
         m_diameter = 1.0f;
         m_count = 128;
@@ -65,11 +68,11 @@ public:
     };
     virtual void make()
     {};
-    const ShapeType getType() const
+    ShapeType getType()
     {
         return m_type;
     }
-    MeshData getMesh()
+    MeshData& getMesh()
     {
         return m_mesh;
     }
@@ -79,7 +82,6 @@ public:
     }
     GLuint getVAO()
     {
-        createVAO();
         return m_VAO;
     };
     void createVAO()
@@ -90,7 +92,6 @@ public:
     {
         return m_mesh.positions.size();
     }
-//    virtual void setColor(glm::vec3& newCol) = 0;
     bool* getCap()
     {
         return &m_cap;
@@ -98,24 +99,32 @@ public:
     bool* changeCap() {
         return &m_change;
     }
+    ShapeType changeType() {
+        return m_changeType;
+    }
     void setCap(bool newCap)
     {
         if (m_cap != newCap)
         {
             m_cap = newCap;
             make();
-            getVAO();
+            createVAO();
+//            getVAO();
         }
     }
+
     void setColor(glm::vec3& newCol)
     {
         if (m_color != newCol)
         {
             m_color = newCol;
             make();
-            getVAO();
+            createVAO();
         }
     }
+
+
+    ShapeType   m_changeType;
 protected:
     ShapeType   m_type;
     bool        m_cap;
@@ -129,6 +138,5 @@ protected:
 
     bool        m_change;
 };
-
 
 #endif //FINALYEARPROJECT_MESH_H

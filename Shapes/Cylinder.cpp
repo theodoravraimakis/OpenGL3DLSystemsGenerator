@@ -12,12 +12,15 @@ Cylinder::Cylinder(
         glm::mat4 transformations
         ) : Shape {ShapeType::CYLINDER}
 {
+//    m_type =
     m_cap = cap;
     m_diameter = diameter;
     m_count = count;
     m_color = color;
     m_transformations = transformations;
-    make();
+//    m_changeType = m_type;
+//    m_change = m_cap;
+//    make();
 };
 
 Cylinder::Cylinder(): Shape {

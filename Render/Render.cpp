@@ -24,14 +24,11 @@ void Render::run()
             { GL_FRAGMENT_SHADER, "../Shaders/camera.frag" }
     };
     m_shader = std::make_shared<Shader>(s);
-    m_shape = std::make_shared<Cylinder>();
-    m_shape =  std::make_shared<Cone>(true, 4, glm::vec3(0.88f, 0.33f, 0.25f),
-        glm::rotate(glm::mat4(1.0f), kPi_/2, glm::vec3(0.0f, 0.0f, 1.0f)) *
-                glm::scale(glm::mat4(1.0f), glm::vec3(4.f, 0.5f, 0.5f)));\
+
+    m_shape =  std::make_shared<Cylinder>();
     m_light = std::make_shared<Light>();
     m_turtle = std::make_shared<Turtle>();
-//    m_coordsAxis = std::make_shared<coordinateAxesArrows>();
-//    position = m_camera->getPos();
+
     configureCallbacks();
 
     fov = m_camera->getFOV();
@@ -39,7 +36,8 @@ void Render::run()
     m_UI = std::make_unique<UI>(
             m_window,
             m_camera,
-            m_light
+            m_light,
+            m_shape
     );
 
     mainLoop();
@@ -106,7 +104,8 @@ void Render::handleInput() {
 
 void Render::mainLoop()
 {
-    m_turtle->computeFinalWorldM();
+    m_shape->make();
+    m_turtle->computeFinalWorldM(m_shape);
 
     while (!m_window->isWindowClosed()) {
 
@@ -136,11 +135,7 @@ void Render::mainLoop()
         m_shader->setFloat("ambientStrength", m_light->m_lambient);
 
 
-
         m_turtle->draw(m_shader, m_shape);
-
-
-
         m_UI->imguiDraw(m_camera,
                         m_shape,
                         m_light

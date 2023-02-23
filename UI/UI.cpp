@@ -11,8 +11,8 @@
 UI::UI(
         const std::shared_ptr<Window>& window,
         const std::shared_ptr<ArcballCamera>& camera,
-//        const std::shared_ptr<Cylinder>& cylinder,
-        const std::shared_ptr<Light> &light
+        const std::shared_ptr<Light> &light,
+        const std::shared_ptr<Shape> &shape
 )
 {
 
@@ -73,7 +73,7 @@ void UI::imguiDemo()
 
 }
 void UI::imguiDraw(const std::shared_ptr<ArcballCamera> &camera,
-                   const std::shared_ptr<Shape> &shape,
+                   std::shared_ptr<Shape> &shape,
                    const std::shared_ptr<Light> &light
 )
 {
@@ -206,24 +206,21 @@ void UI::imguiCamera(const std::shared_ptr<ArcballCamera> &camera)
 }
 
 void UI::shapeCap(
-        const std::shared_ptr<Shape> &shape
+        std::shared_ptr<Shape>& shape
 )
 {
     bool* change = shape->changeCap();
 
     ImGui::Checkbox("Cap on", change);
+
     if (*shape->getCap() != *shape->changeCap()) {
         shape->setCap(*change);
         std::cout << "vio" << std::endl;
     }
 
-//shape->setMesh();
-
-//MeshData h = shape->getMesh();
-//    shape->setMesh(h);
-
     const char* items[] = { "Cylinder", "Cone"};
-    static const char* current_item = NULL;
+    auto e = shape->getType();
+    static const char* current_item = items[(int&)e];
 
     if (ImGui::BeginCombo("##combo", current_item)) // The second parameter is the label previewed before opening the combo.
     {
@@ -232,19 +229,26 @@ void UI::shapeCap(
             bool is_selected = (current_item == items[n]); // You can store your selection however you want, outside or inside your objects
             if (ImGui::Selectable(items[n], is_selected)) {
                 current_item = items[n];
-//                shape->changeShape(current_item);
-//                shape->getShape();
+
+                if (current_item == items[0]&& shape->getType()!=ShapeType::CYLINDER)
+                {
+                    shape.reset();
+                    shape = m_cylinder;
+                }
+                if (current_item == items[1] && shape->getType()!=ShapeType::CONE)
+                {
+                    shape.reset();
+                    shape = m_cone;
+                }
             }
             if (is_selected)
                 ImGui::SetItemDefaultFocus();   // You may set the initial focus when opening the combo (scrolling + for keyboard navigation support)
         }
-//        if (shape->getShape() == 0) shape->setMesh()
-//        if (current_item == items[0])
-//            std::cout<<current_item;
         ImGui::EndCombo();
     }
 
 }
+
 
 void UI::changeColor(const std::shared_ptr<Shape> &shape)
 {

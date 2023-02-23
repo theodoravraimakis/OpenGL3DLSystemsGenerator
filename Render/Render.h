@@ -18,7 +18,7 @@
 class Render {
 public:
     void run();
-private:
+//private:
     void mainLoop();
     static void scrollCallback(GLFWwindow* window, double xoffset, double yoffset);
     static void reloadShader(GLFWwindow* aWindow, int aKey, int, int aAction, int);
@@ -42,6 +42,7 @@ private:
 //    inline static float fov = 50.0f;
     inline static float fov;
     inline static glm::vec3 position;
+
 
 
 };

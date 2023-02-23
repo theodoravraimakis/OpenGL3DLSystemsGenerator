@@ -16,12 +16,17 @@ Cone::Cone(
     m_count = count;
     m_color = color;
     m_transformations = transformations;
+//    m_changeType = m_type;
+//    m_change = m_cap;
+    make();
+};
+Cone::Cone(): Shape {
+        ShapeType::CONE}{
     make();
 };
 void Cone::make() {
     std::vector<glm::vec3> vertices;
     std::vector<glm::vec3> normals;
-    m_change = m_cap;
     glm::vec4 aColor = glm::vec4(m_color, 1.0f);
 
     float prevY = cos(0.f);
