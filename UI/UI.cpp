@@ -230,7 +230,7 @@ void UI::shapeCap(
             if (ImGui::Selectable(items[n], is_selected)) {
                 current_item = items[n];
 
-                if (current_item == items[0]&& shape->getType()!=ShapeType::CYLINDER)
+                if (current_item == items[0] && shape->getType()!=ShapeType::CYLINDER)
                 {
                     shape.reset();
                     shape = m_cylinder;

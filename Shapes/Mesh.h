@@ -84,6 +84,10 @@ public:
     {
         return m_VAO;
     };
+    GLuint* getPointerVAO()
+    {
+        return &m_VAO;
+    };
     void createVAO()
     {
         m_VAO = m.createVAO(m_mesh);

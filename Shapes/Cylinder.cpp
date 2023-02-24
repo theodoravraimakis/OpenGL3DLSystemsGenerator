@@ -25,10 +25,12 @@ Cylinder::Cylinder(
 
 Cylinder::Cylinder(): Shape {
         ShapeType::CYLINDER}{
-    make();
+//    m_change = m_cap;
+//    make();
 };
 
 void Cylinder::make() {
+    m_change = m_cap;
     std::vector<glm::vec3> vertices;
     std::vector<glm::vec3> normals;
     m_change = m_cap;

@@ -145,6 +145,8 @@ void Render::mainLoop()
         m_window->swapBuffers();
 
     }
+    auto g = m_shape->getPointerVAO();
+    glDeleteVertexArrays(GL_ARRAY_BUFFER, g);
 
     m_UI->imguiDestroy();
 }
