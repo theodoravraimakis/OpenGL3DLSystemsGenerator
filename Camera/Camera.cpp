@@ -4,24 +4,26 @@
 
 #include "Camera.h"
 
-Camera::Camera
-        (
-                GLFWwindow* window,
-                glm::vec4& pos,
-                glm::vec4& target,
-                const float FOV,
-                const float ratio
-        ) : m_window(window),
+Camera::Camera(
+        GLFWwindow* window,
+        glm::vec4& pos,
+        glm::vec4& target,
+        const float FOV,
+        const float ratio
+        ) :
+            m_window(window),
             m_FOV(FOV),
             m_ratio(ratio),
             m_pos(pos),
             m_objectPos(target)
 {
     m_rightVec = glm::vec3(0.0f, 1.0f, 0.0f);
-    m_proj = getNewProjMat(
+
+    m_proj = getNewProjMat
+            (
             glm::radians(m_FOV),
             m_ratio
-    );
+            );
 
     m_prevCursor = glm::vec2(0.0f);
     m_currentCursor = glm::vec2(0.0f);
@@ -29,26 +31,24 @@ Camera::Camera
 
 Camera::~Camera() = default;
 
-const glm::mat4& Camera
-::getProjectionM() const
+const glm::mat4& Camera::getProjectionM() const
 {
     return m_proj;
 }
 
-const glm::mat4& Camera
-::getViewMat()
+const glm::mat4& Camera::getViewMat()
 {
-    m_view = glm::lookAt(
+    m_view = glm::lookAt
+            (
             glm::vec3(m_pos),
             glm::vec3(m_objectPos),
             glm::vec3(0.0f, 1.0f, 0.0f)
-    );
+            );
 
     return m_view;
 }
 
-const float& Camera
-::getFOV() const
+const float& Camera::getFOV() const
 {
     return m_FOV;
 }
@@ -56,45 +56,38 @@ const float& Camera
 glm::mat4 Camera::getNewProjMat(
         const float newFOV,
         const float newRatio
-) {
+        ) {
 
     glm::mat4 proj = glm::perspective(
             newFOV,
             newRatio, 0.1f, 100.0f
     );
+
     return proj;
 }
 
-void Camera
-::setFOV(const float& newFOV)
+void Camera::setFOV(const float& newFOV)
 {
     m_FOV = newFOV;
-
-    m_proj = getNewProjMat(glm::radians(newFOV),
-                           m_ratio
-    );
+    m_proj = getNewProjMat(glm::radians(newFOV),m_ratio);
 }
 
-void Camera
-::setPos(const glm::vec4& pos)
+void Camera::setPos(const glm::vec4& pos)
 {
     m_pos = pos;
 }
 
-void Camera
-::setObjectPos(const glm::vec4& objectPos)
+void Camera::setObjectPos(const glm::vec4& objectPos)
 {
     m_objectPos = objectPos;
 }
 
-glm::vec4& Camera
-::getPos()
+glm::vec4& Camera::getPos()
 {
     return m_pos;
 }
 
-glm::vec4& Camera
-::getObjectPos()
+glm::vec4& Camera::getObjectPos()
 {
     return m_objectPos;
 }

@@ -623,7 +623,6 @@ void UI::displayRule(Rule* rule,
 
             auto r = std::make_shared<Rule>(*rule);
             lsys->setTexture(r, texture.location);
-            std::cout << "set texture to " << texture.location << std::endl;
         }
         if (*rule->m_polygon || lsys->contextSensitive) {
             ImGui::PopStyleVar();

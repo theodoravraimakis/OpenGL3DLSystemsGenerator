@@ -169,7 +169,7 @@ Yes, for further instructions refer to the [Features](#features) section.
 The software was tested on macOS and Linux environments, it should be running and compiling correctly on Windows.
 
 ## External Materials
-```Shader```, ```Checkpoint``` and ```Error``` classes were used (after obtaining permission) from the material of COMP3811 module.
+```Shader```, ```Checkpoint```, ```Error```, ```Shader```, ```Mesh```, the struct ```MeshData``` and the function ```loadOBJ``` classes were used (after obtaining permission) from the material of COMP3811 module.
 
 Used L-systems productions sources: <sup id="a1">[1](#f1)</sup>, <sup id="a9">[9](#f1)</sup>, <sup id="a10">[10](#f1)</sup>, <sup id="a11">[11](#f1)</sup>, <sup id="a12">[12](#f1)</sup>}.
 
@@ -218,7 +218,3 @@ Font: ```Noto Sans``` <sup id="a19">[19](#f1)</sup>.
 <b id="f17">17</b> Slater, K. (2023). Tree Bark Picture. Retrieved from https://commons.wikimedia.org/wiki/File:Tree_Bark_Picture.JPG. Licensed under Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0). ↩ <br>
 <b id="f18">18</b> Unknown. (2023). Free Texture Tree Bark (22820701). Retrieved from https://commons.wikimedia.org/wiki/File:Free_Texture_Tree_Bark_(22820701).jpeg. Licensed under Creative Commons Attribution 3.0 Unported (CC BY 3.0). ↩ <br>
 <b id="f19">19</b> Google. (2014). Noto Sans. Retrieved from https://www.google.com/get/noto/. Licensed under the SIL Open Font License, Version 1.1. ↩ <br>
-
-
-## Conclusion
-

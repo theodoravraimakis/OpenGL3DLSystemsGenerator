@@ -9,23 +9,18 @@ FetchContent_Declare(
 )
 FetchContent_Populate(imgui)
 
-# https://github.com/MalteQuandt/physicsrenderer/blob/9d985799ba1298e622c3811c1492efff2bb9a8e0/lib/external/CMakeLists.txt
 add_library(imgui
-        STATIC
-        )
+        STATIC)
+
 target_sources(imgui
         PUBLIC
-            # Top-Level files
             ${imgui_SOURCE_DIR}/imgui.cpp
             ${imgui_SOURCE_DIR}/imgui_demo.cpp
             ${imgui_SOURCE_DIR}/imgui_tables.cpp
             ${imgui_SOURCE_DIR}/imgui_widgets.cpp
             ${imgui_SOURCE_DIR}/imgui_draw.cpp
-
-            # Backend-Specific code
             ${imgui_SOURCE_DIR}/backends/imgui_impl_glfw.cpp
             ${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp
-
             ${imgui_SOURCE_DIR}/misc/cpp/imgui_stdlib.cpp
         )
 
@@ -36,9 +31,7 @@ target_link_libraries(imgui
 
 target_include_directories(imgui
         PUBLIC
-            # Top-Level Includes
             ${imgui_SOURCE_DIR}/
-            # Backend-specific includes
             ${imgui_SOURCE_DIR}/backends/
         )
         

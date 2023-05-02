@@ -10,8 +10,6 @@
 #include "../Shapes/Mesh.h"
 #include "../Export/OBJExport.h"
 
-
-
 namespace Config {
     inline const unsigned int SCR_WIDTH = 800;
     inline const unsigned int SCR_HEIGHT = 600;
@@ -24,7 +22,6 @@ public:
             m_cylinder(std::make_shared<Cylinder>())
     {
         m_cylinder=std::make_shared<Cylinder>();
-
         shapes.emplace_back(m_cylinder);
     }
 
@@ -42,7 +39,7 @@ public:
             m_lcolor(glm::vec3(1.0f, 1.0f, 1.0f)),
             m_lambient(0.5),
             m_specular(0.5)
-    { }
+    {}
 
     inline void setLightPos(glm::vec3 pos) {
         m_lpos = pos;

@@ -47,12 +47,11 @@ public:
     glm::mat4   m_proj{};
     glm::vec3   m_rightVec{};
     glm::fvec2  m_prevCursor{};
+    glm::fvec2 m_currentCursor{};
 
 private:
     glm::vec3 getArcballVec(float x, float y);
     void updateViewMat();
-
-    glm::fvec2 m_currentCursor{};
 
     friend class UI;
     friend class Window;

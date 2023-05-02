@@ -58,17 +58,6 @@ public:
         m_childRule = nullptr;
     }
 
-    Command(std::string value, CommandType type, Rule* child) :
-            m_value(value),
-            m_type(type),
-            m_childRule(child){
-        m_childRule = nullptr;
-    }
-
-    Command(CommandType type) :
-            m_type(type) {
-    }
-    ShapeType m_shape;
     CommandType m_type;
     ShapeType m_shapeType;
     std::string m_value;
@@ -217,7 +206,6 @@ public:
 
 class turtleState {
 public:
-    turtleState() {}
     turtleState(
             std::shared_ptr<float> angle,
             float length,
@@ -277,7 +265,6 @@ public:
     glm::mat4 m_worldMat;
     std::shared_ptr<float> m_angle;
     std::shared_ptr<OutputElement> m_element = nullptr;
-    bool polygon = false;
 };
 
 

@@ -93,15 +93,11 @@ std::shared_ptr<Output> LSystem::evaluateProduction(std::vector<Command>& comman
     auto out = std::make_shared<Output>();
 
     std::shared_ptr<std::vector<Command>> v = std::make_shared<std::vector<Command>>();
+
     std::vector<turtleState> stack;
 
+    turtleState state(m_angle,m_length,m_width,allShapes->m_cylinder);
 
-    turtleState state(
-            m_angle,
-            m_length,
-            m_width,
-            allShapes->m_cylinder
-    );
     for (auto &command: commands) {
         const auto &cmd = command;
         bool ref = false;
@@ -205,6 +201,8 @@ std::shared_ptr<Output> LSystem::evaluateProduction(std::vector<Command>& comman
 
             }
 
+            case CommandType::PARAMETER:
+                break;
         }
     }
 

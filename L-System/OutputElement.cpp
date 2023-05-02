@@ -116,7 +116,7 @@ std::vector<Command> stringToCommands(LSystem* lsys,
                 }
             }
             case 'f':
-                commands.push_back(Command(CommandType::SKIP));
+                commands.push_back(Command("f", CommandType::SKIP));
                 break;
 
             case '+':
