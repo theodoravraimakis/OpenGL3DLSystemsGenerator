@@ -8,36 +8,81 @@
 
 void Render::run()
 {
-    m_window = std::make_shared<Window>(
-    );
+    m_window = std::make_shared<Window>();
 
-    m_camera = std::make_shared<ArcballCamera>(
+    auto pos = glm::vec4(1.0f);
+    auto tar = glm::vec4(0.0f);
+
+    m_camera = std::make_shared<Camera>(
             m_window->get(),
-            glm::fvec4(1.0f, 1.0f, 30.0f, 1.0f),
-            glm::fvec4(1.0f),
-            50.0f,
+            pos,
+            tar,
+            10.0f,
             ((float)m_window->nwidth / (float) m_window->nheight)
 
     );
+
     std::vector<Shader::ShaderSource> s = {
-            { GL_VERTEX_SHADER, "../Shaders/camera.vert" },
-            { GL_FRAGMENT_SHADER, "../Shaders/camera.frag" }
+            { GL_VERTEX_SHADER, "../Shader/camera.vert" },
+            { GL_FRAGMENT_SHADER, "../Shader/camera.frag" }
     };
+
     m_shader = std::make_shared<Shader>(s);
 
-    m_shape =  std::make_shared<Cylinder>();
     m_light = std::make_shared<Light>();
-    m_turtle = std::make_shared<Turtle>();
-
+    m_allShapes = std::make_shared<AllShapes>();
+    m_shape =  m_allShapes->m_cylinder;
     configureCallbacks();
 
     fov = m_camera->getFOV();
+
+    std::vector<Command> c1 = {};
+    std::vector<Rule> r = {};
+    m_rules = r;
+
+    m_lsys = std::make_shared<LSystem>(
+            std::vector<Command>(std::move(c1)),
+            3.0,
+            m_rules,
+            std::make_shared<float>(90.0f),
+            m_shape->getLength(),
+            m_shape,
+            m_allShapes,
+            m_camera
+    );
+    m_lsys->m_setting = "HELLO!";
+
+    m_lsys->m_axiomBuffer.clear();
+    m_lsys->m_axiomBuffer = "H+f+E-ff-ff|L-ff-ff|L-fff-ff|Of+!";
+    m_lsys->m_rules.clear();
+
+    m_lsys->addRule("H", "F+f+F[F]+F-F");
+    m_lsys->m_rules.back().m_shape->m_color = glm::vec3(255, 87, 51) / 255.0f;
+    m_lsys->m_rules.back().m_shape->updateShape();
+    m_lsys->addRule("E", "[-F]F[-F]F[-F]");
+    m_lsys->m_rules.back().m_shape->m_color = glm::vec3(255, 189, 51) / 255.0f;
+    m_lsys->m_rules.back().m_shape->updateShape();
+    m_lsys->addRule("L", "[-F]FF");
+    m_lsys->m_rules.back().m_shape->m_color = glm::vec3(219, 255, 51) / 255.0f;
+    m_lsys->m_rules.back().m_shape->updateShape();
+    m_lsys->addRule("O", "FF+F+FF+F");
+    m_lsys->m_rules.back().m_shape->m_color = glm::vec3(117, 255, 51) / 255.0f;
+    m_lsys->m_rules.back().m_shape->updateShape();
+    m_lsys->addRule("!", "[\"(0.3)F][\"(0.5)f\"(1.7)FF]");
+    m_lsys->m_rules.back().m_shape->m_color = glm::vec3(51, 255, 87) / 255.0f;
+    m_lsys->m_rules.back().m_shape->updateShape();
+
+
+    m_lsys->m_angle = std::make_shared<float>(90);
+    m_lsys->updateAxiom();
 
     m_UI = std::make_unique<UI>(
             m_window,
             m_camera,
             m_light,
-            m_shape
+            m_allShapes,
+            m_shape,
+            m_lsys
     );
 
     mainLoop();
@@ -46,11 +91,11 @@ void Render::run()
 
 void Render::configureCallbacks() {
     m_isMouseInMotion = false;
+    isOnUI = std::make_shared<bool>(false);
 
     glfwSetWindowUserPointer(m_window->get(), m_camera.get());
     glfwSetWindowUserPointer(m_window->get(), m_shader.get());
-    glfwSetScrollCallback(m_window->get(), scrollCallback);//
-    glfwSetKeyCallback(m_window->get(), reloadShader); //shader reload
+    glfwSetScrollCallback(m_window->get(), scrollCallback);
     glfwGetFramebufferSize(m_window->get(), &m_window->nwidth, &m_window->nheight);
 }
 
@@ -59,10 +104,10 @@ void Render::scrollCallback(
         double xoffset,
         double yoffset
 ) {
+    if(*isOnUI)
+        return;
     float actualFOV = fov;
-    float newFOV = actualFOV - yoffset
-//            * -1.0f
-            ;
+    float newFOV = actualFOV - yoffset;
     if (newFOV < 1.0f)
         newFOV = 1.0f;
     if (newFOV > 100.0f)
@@ -74,40 +119,45 @@ void Render::scrollCallback(
 
 void Render::handleInput() {
     m_window->pollEvents();
-
-    if (m_UI->isCursorPositionInGUI())
+    if (m_UI->isCursorOnUI()) {
         return;
+    }
     if (glfwGetMouseButton(m_window->get(), GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
 
-        auto pCamera = std::dynamic_pointer_cast<ArcballCamera>(m_camera);
-
+        auto cameraPointer = std::dynamic_pointer_cast<Camera>(m_camera);
         if (!m_isMouseInMotion)
         {
-            pCamera->saveCursorPos();
-
+            cameraPointer->saveCursor();
             m_isMouseInMotion = true;
-
-        } else {
-
-            // TODO: Make it dynamic.
-            glm::mat4 newRot = glm::mat4(1.0f);
-//            glm::mat4 newRot = m_turtle->finalWorldMatrices[0];
-
-            pCamera->updateCameraPos(newRot);
+        }
+        else
+        {
+            cameraPointer->update();
         }
 
-    } else
-    {
-        m_isMouseInMotion = false;
     }
+    else
+        m_isMouseInMotion = false;
 }
 
 void Render::mainLoop()
 {
-    m_shape->make();
-    m_turtle->computeFinalWorldM(m_shape);
 
+    m_shape->make();
+    m_shape->createVAO();
+
+    GLuint grassTexture = OBJExport::loadTexture("../textures/treeTexture.jpeg", 4);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, grassTexture);
+    GLuint textureLocation = glGetUniformLocation(m_shader->programId(), "textureSampler");
+    glUniform1i(textureLocation, 0);
+
+    m_allShapes->m_cylinder->getMesh().texture = grassTexture;
     while (!m_window->isWindowClosed()) {
+
+        isOnUI = std::make_shared<bool>(m_UI->isCursorOnUI());
+
 
         m_window->processInput();
         m_window->clearScreen();
@@ -115,30 +165,39 @@ void Render::mainLoop()
 
         handleInput();
 
-        m_camera->processInput(m_window->getDeltaTime());
-
         glUseProgram(m_shader->programId());
-
 
         m_camera->setFOV(fov);
 
         glm::mat4 projection = m_camera->getProjectionM();
         m_shader->setMat4("projection", projection);
 
-        glm::mat4 view = m_camera->getViewM();
+        glm::mat4 view = m_camera->getViewMat();
         m_shader->setMat4("view", view);
 
 
-
         m_shader->setVec3("lightColor", m_light->m_lcolor);
-        m_shader->setVec3("lightPosition", m_light->m_lpos);
+        m_shader->setVec3("lightPos", m_light->m_lpos);
         m_shader->setFloat("ambientStrength", m_light->m_lambient);
+        m_shader->setFloat("specularStrength", m_light->m_specular);
+        m_shader->setFloat("shininess", 0.5);
 
+        if (!m_UI->m_loadedMesh.positions.empty()) {
+            glBindVertexArray(m_UI->m_loadedMeshVAO);
+            m_shader->setMat4("model", glm::mat4(1.0f));
+            glDrawArrays(GL_TRIANGLES, 0, m_UI->m_loadedMesh.positions.size());
 
-        m_turtle->draw(m_shader, m_shape);
-        m_UI->imguiDraw(m_camera,
+        }
+        else
+        {
+            m_lsys->m_output->draw(m_shader, m_shape, m_allShapes, m_camera, m_lsys->m_textures);
+        }
+        m_UI->imguiDraw(m_window,
+                        m_camera,
                         m_shape,
-                        m_light
+                        m_light,
+                        m_allShapes,
+                        m_lsys
         );
 
 
@@ -151,28 +210,4 @@ void Render::mainLoop()
     m_UI->imguiDestroy();
 }
 void Render::destroy()
-{
-//    m_window->destroy();
-//    m_shader->d
-}
-void Render::reloadShader(GLFWwindow* aWindow, int aKey, int, int aAction, int)
-{
-    auto* sh = static_cast<Shader*>(
-            glfwGetWindowUserPointer(aWindow)
-    );
-    if (GLFW_KEY_R == aKey && GLFW_PRESS == aAction)
-    {
-        try
-        {
-            sh->reload();
-            std::fprintf(stderr, "Shaders reloaded and recompiled.\n");
-        }
-        catch (std::exception const& eErr)
-        {
-            std::fprintf(stderr, "Error when reloading shader:\n");
-            std::fprintf(stderr, "%s\n", eErr.what());
-            std::fprintf(stderr, "Keeping old shader.\n");
-        }
-    }
-}
-
+{}

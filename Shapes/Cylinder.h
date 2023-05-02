@@ -13,6 +13,7 @@ public:
     Cylinder(
             bool cap,
             float diameter,
+            std::shared_ptr<float> length,
             int count,
             glm::vec3 color,
             glm::mat4 transformations

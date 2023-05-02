@@ -1,7 +1,3 @@
-//
-// Created by Theodora Vraimakis on 10/02/2023.
-//
-
 #ifndef FINALYEARPROJECT_CHECKPOINT_H
 #define FINALYEARPROJECT_CHECKPOINT_H
 

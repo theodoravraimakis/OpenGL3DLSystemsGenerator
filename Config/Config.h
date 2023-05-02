@@ -5,11 +5,11 @@
 #ifndef FINALYEARPROJECT_CONFIG_H
 #define FINALYEARPROJECT_CONFIG_H
 
-//#include "GLFW/glfw3.h"
 #include "glm/glm.hpp"
 #include "../Shapes/Cylinder.h"
-#include "../Shapes/Cone.h"
 #include "../Shapes/Mesh.h"
+#include "../Export/OBJExport.h"
+
 
 
 namespace Config {
@@ -18,13 +18,31 @@ namespace Config {
     inline const char *TITLE = "Generative Algorithms Toolkit";
 };
 
+class AllShapes {
+public:
+    explicit AllShapes() :
+            m_cylinder(std::make_shared<Cylinder>())
+    {
+        m_cylinder=std::make_shared<Cylinder>();
+
+        shapes.emplace_back(m_cylinder);
+    }
+
+    std::shared_ptr<Shape> m_cylinder = nullptr;
+    std::vector<std::shared_ptr<Shape>> shapes;
+    std::string m_name;
+    ShapeType m_type;
+
+};
+
 class Light {
 public:
     explicit Light() :
-                        m_lpos(glm::vec3(-1.0f, 1.0f, 1.0f)),
-                        m_lcolor(glm::vec3(1.0f, 1.0f, 1.0f)),
-                        m_lambient(0.5)
-                        { }
+            m_lpos(glm::vec3(-1.0f, 1.0f, 1.0f)),
+            m_lcolor(glm::vec3(1.0f, 1.0f, 1.0f)),
+            m_lambient(0.5),
+            m_specular(0.5)
+    { }
 
     inline void setLightPos(glm::vec3 pos) {
         m_lpos = pos;
@@ -33,74 +51,37 @@ public:
     glm::vec3 m_lcolor;
     glm::vec3 m_lpos;
     float m_lambient;
+    float m_specular;
 };
 
-class coordinateAxesArrows {
+struct Texture {
+    std::string name;
+    GLuint location = 0;
+};
+
+class Textures {
 public:
-    inline coordinateAxesArrows()
+    explicit Textures()
     {
-//        Mesh m;
-//        m_cylinder = Cylinder(true, 16, glm::vec3(1.f, 0.f, 0.f),
-//                            glm::scale(glm::mat4(1.0f), glm::vec3(5.f, 0.1f, 0.1f))
-//                            ).getMesh();
-////        m_cone = Cone(true, 16, glm::vec3(0.f, 0.f, 0.f),
-////                      glm::scale(glm::mat4(1.0f), glm::vec3( 1.f, 0.3f, 0.3f ))
-////                      * glm::translate(glm::mat4(1.0f), glm::vec3(5.0f, 0.f, 0.f))
-////                        ).getMesh();
-//        auto x_arrow = m.concatenate( std::move(m_cylinder), m_cone );
-//        m.clearMesh(m_cylinder); m.clearMesh(m_cone);
-//
-//        m_cylinder = Cylinder(true, 16, glm::vec3(0.f, 1.f, 0.f),
-//                              glm::rotate(glm::mat4(1.0f), -kPi_/2, glm::vec3(0.0f, 0.0f, 1.0f))
-//                              * glm::scale(glm::mat4(1.0f), glm::vec3(5.f, 0.1f, 0.1f))
-//                              ).getMesh();
-//        m_cone = Cone(true, 16, glm::vec3(0.f, 0.f, 0.f),
-//                      glm::rotate(glm::mat4(1.0f), -kPi_/2, glm::vec3(0.0f, 0.0f, 1.0f))
-//                                  * glm::scale(glm::mat4(1.0f), glm::vec3( 1.f, 0.3f, 0.3f ))//translation
-//                                  * glm::translate(glm::mat4(1.0f), glm::vec3(5.0f, 0.f, 0.f))
-//                      ).getMesh();
-//        auto y_arrow = m.concatenate( std::move(m_cylinder), m_cone );
-//        m.clearMesh(m_cylinder); m.clearMesh(m_cone);
-//        auto xy_arrow = m.concatenate(std::move(x_arrow), y_arrow);
-//        m.clearMesh(x_arrow); m.clearMesh(y_arrow);
-//
-//        m_cylinder = Cylinder(true, 16, glm::vec3(0.f, 0.f, 1.f),
-//                              glm::rotate(glm::mat4(1.0f), -kPi_/2, glm::vec3(0.0f, 1.0f, 0.0f))
-//                              * glm::scale(glm::mat4(1.0f), glm::vec3(5.f, 0.1f, 0.1f))
-//        ).getMesh();
-//        m_cone = Cone(true, 16, glm::vec3(0.f, 0.f, 0.f),
-//                      glm::rotate(glm::mat4(1.0f), -kPi_/2, glm::vec3(0.0f, 1.0f, 0.0f))
-//                      * glm::scale(glm::mat4(1.0f), glm::vec3( 1.f, 0.3f, 0.3f ))
-//                      * glm::translate(glm::mat4(1.0f), glm::vec3(5.0f, 0.f, 0.f))
-//        ).getMesh();
-//        auto z_arrow = m.concatenate( std::move(m_cylinder), m_cone );
-//        m.clearMesh(m_cylinder); m.clearMesh(m_cone);
-//
-//        m_axesArrows = m.concatenate(
-//                std::move(xy_arrow),
-//                z_arrow
-//        );
-//        m_vertexCount = m_axesArrows.positions.size();
-//        m.clearMesh(z_arrow);
-//
-//        m_VAO = m.createVAO(m_axesArrows);
-    };
-    MeshData m_axesArrows;
-//    MeshData m_cylinder;
-//    MeshData m_cone;
-    GLuint m_VAO;
-    size_t m_vertexCount;
+        grass.name = "grass";
+        grass.location = OBJExport::loadTexture("../textures/grass.png", 4);
+        tree.name = "name";
+        tree.location = OBJExport::loadTexture("../textures/treetexture.jpeg", 4);
+        tree1.name = "tree1";
+        tree1.location = OBJExport::loadTexture("../textures/treetexture1.jpg", 4);
+        bush.name = "bush";
+        bush.location = OBJExport::loadTexture("../textures/bush.jpg", 4);
+        textures.push_back(grass);
+        textures.push_back(tree);
+        textures.push_back(tree1);
+        textures.push_back(bush);
 
-    inline void draw() {
-        glBindVertexArray(m_VAO);
-        glDrawArrays(GL_TRIANGLES, 0, 3 * m_vertexCount);
     }
-
-    inline ~coordinateAxesArrows() {
-        Mesh m;
-//        m.clearMesh(m_cylinder); m.clearMesh(m_cone); m.clearMesh(m_axesArrows);
-        glDeleteBuffers(1, &m_VAO);
-    }
+    Texture grass;
+    Texture tree;
+    Texture tree1;
+    Texture bush;
+    std::vector<Texture> textures;
 };
 
 #endif //FINALYEARPROJECT_CONFIG_H
