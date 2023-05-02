@@ -4,7 +4,7 @@ set(CMAKE_CXX_STANDARD 17)
 
 add_subdirectory(ThirdParty/glad)
 add_subdirectory(ThirdParty/imgui)
-add_subdirectory(ThirdParty/learnopengl)
+add_subdirectory(ThirdParty/stb)
 
 include(FetchContent)
 FetchContent_Declare(
@@ -33,20 +33,14 @@ add_executable(FinalYearProject main.cpp
                                 Error/Error.cpp
                                 Checkpoint/Checkpoint.cpp
                                 Render/Render.cpp
-                                Camera/ArcballCamera.cpp
+                                Camera/Camera.cpp
                                 Shapes/Mesh.cpp
                                 Shapes/Cylinder.cpp
                                 Shapes/Cone.cpp
-                                Turtle/Turtle.cpp
+                                L-System/LSystem.cpp
+                                L-System/OutputElement.cpp
+                                L-System/Output.cpp
+                                Export/OBJExport.cpp
                 )
 
-target_link_libraries(FinalYearProject glm glfw glad imgui rapidobj
-#learnopengl
-)
-
-#file(MAKE_DIRECTORY ${CMAKE_SOURCE_DIR}/shaders) # create a shaders folder
-#
-## copy shaders
-#add_custom_command(TARGET FinalYearProject PRE_BUILD
-#        COMMAND ${CMAKE_COMMAND} -E copy_directory
-#        ${CMAKE_SOURCE_DIR}/shaders/ ${CMAKE_BINARY_DIR}/shaders)
+target_link_libraries(FinalYearProject glm glfw glad imgui rapidobj stb)

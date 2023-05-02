@@ -12,28 +12,62 @@
 
 #include "glm/glm.hpp"
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/rotate_vector.hpp>
 
 #include <vector>
+#include <memory>
 
 #include "iostream"
 #include "string"
+#include <stack>
+
+
+
+class Command;
+enum class CommandType;
 
 
 constexpr float kPi_ = 3.1415926f;
+
+struct Material {
+    std::string name;
+    glm::vec3 diffuse = glm::vec3(1.0f);
+    glm::vec3 specular = glm::vec3(1.0f);
+    float shininess = 0.0f;
+};
 
 struct MeshData
 {
     std::vector<glm::vec3> positions;
     std::vector<glm::vec4> colors;
     std::vector<glm::vec3> normals;
+
+
+    std::vector<glm::vec2> textCoords;
+    GLuint texture = 100;
+
+    void transform(const glm::mat4& transformMatrix)
+    {
+        for (glm::vec3& position : positions)
+        {
+            glm::vec4 transformedPosition = transformMatrix * glm::vec4(position, 1.0f);
+            position = glm::vec3(transformedPosition);
+        }
+
+        for (glm::vec3& normal : normals)
+        {
+            glm::vec4 transformedNormal = glm::transpose(glm::inverse(transformMatrix)) * glm::vec4(normal, 0.0f);
+            normal = glm::normalize(glm::vec3(transformedNormal));
+        }
+    }
 };
 
 class Mesh {
 public:
-    GLuint createVAO(MeshData const&);
-    MeshData concatenate(MeshData aM, MeshData const& aN );
-    friend class coordianteAxesArrows;
-    inline void clearMesh(MeshData mesh) {
+    static GLuint createVAO(MeshData const& aMeshData, bool useTexture);
+    static MeshData concatenate(MeshData aM, MeshData const& aN );
+    inline static void clearMesh(MeshData& mesh) {
         mesh.colors.clear();
         mesh.normals.clear();
         mesh.positions.clear();
@@ -43,7 +77,8 @@ public:
 enum class ShapeType
 {
     CYLINDER = 0,
-    CONE = 1
+    CONE = 1,
+    TRIANGLE = 2
 };
 
 
@@ -51,27 +86,30 @@ class Shape {
 public:
     Shape(const ShapeType& type)
     {
+        m_useTexture = std::make_shared<bool>(false);
         m_type = type;
-//        m_changeType = m_type;
-//        m_change = m_cap;
         m_cap = true;
         m_diameter = 1.0f;
-        m_count = 128;
+        m_count = 20;
+        m_length = 0.1f;
+        m_width = 0.01f;
         m_color = glm::vec3(0.48f, 0.33f, 0.25f);
-        m_transformations = glm::rotate(glm::mat4(1.0f), kPi_/2, glm::vec3(0.0f, 0.0f, 1.0f)) *
-                            glm::scale(glm::mat4(1.0f), glm::vec3(4.f, 0.5f, 0.5f));
+        m_transformations = std::make_shared<glm::mat4>(glm::rotate(glm::mat4(1.0f), kPi_/2, glm::vec3(0.0f, 0.0f, 1.0f)) *
+                            glm::scale(glm::mat4(1.0f), glm::vec3(m_length, m_width, m_width)))
+                            ;
+
+        m_polyLength = 0.1f;
+        m_polyAngle = 90.0f;
     };
     ~Shape() {
         m_mesh.colors.clear();
         m_mesh.normals.clear();
         m_mesh.positions.clear();
     };
+
     virtual void make()
     {};
-    ShapeType getType()
-    {
-        return m_type;
-    }
+    void makePolygon(const std::vector<Command>& commands);
     MeshData& getMesh()
     {
         return m_mesh;
@@ -79,6 +117,22 @@ public:
     glm::vec3& getColor()
     {
         return m_color;
+    }
+    float& getLength()
+    {
+        return m_length;
+    }
+    float& getWidth()
+    {
+        return m_width;
+    }
+    float& getPolygonLength()
+    {
+        return m_polyLength;
+    }
+    float& getPolygonAngle()
+    {
+        return m_polyAngle;
     }
     GLuint getVAO()
     {
@@ -90,57 +144,93 @@ public:
     };
     void createVAO()
     {
-        m_VAO = m.createVAO(m_mesh);
+        m_VAO = Mesh::createVAO(m_mesh, *m_useTexture);
     }
     size_t getVertexCount()
     {
         return m_mesh.positions.size();
     }
-    bool* getCap()
-    {
-        return &m_cap;
-    }
-    bool* changeCap() {
-        return &m_change;
-    }
-    ShapeType changeType() {
-        return m_changeType;
-    }
-    void setCap(bool newCap)
-    {
-        if (m_cap != newCap)
-        {
-            m_cap = newCap;
-            make();
-            createVAO();
-//            getVAO();
-        }
-    }
-
     void setColor(glm::vec3& newCol)
     {
         if (m_color != newCol)
         {
             m_color = newCol;
+
             make();
             createVAO();
         }
     }
+    void setLength(float& newLength)
+    {
+        if (m_length != newLength)
+        {
+            m_length = newLength;
 
+            m_transformations = std::make_shared<glm::mat4>(
+                    glm::rotate(glm::mat4(1.0f), kPi_/2, glm::vec3(0.0f, 0.0f, 1.0f)) *
+                                glm::scale(glm::mat4(1.0f), glm::vec3(m_length, m_width, m_width)));
+            updateShape();
+        }
+    }
+    void setWidth(float newWidth)
+    {
+        if (m_width != newWidth)
+        {
+            m_width = newWidth;
+            m_transformations = std::make_shared<glm::mat4>(
+                    glm::rotate(glm::mat4(1.0f), kPi_/2, glm::vec3(0.0f, 0.0f, 1.0f)) *
+                    glm::scale(glm::mat4(1.0f), glm::vec3(m_length, m_width, m_width)));
+            updateShape();
+        }
+    }
+    void setPolyLength(float newLength)
+    {
+        if (m_polyLength != newLength)
+        {
+            m_polyLength = newLength;
+        }
+    }
+    void setPolyAngle(float newAngle)
+    {
+        if (m_polyAngle != newAngle)
+        {
+            m_polyAngle = newAngle;
+        }
+    }
 
-    ShapeType   m_changeType;
-protected:
+    void updateShape()
+    {
+        make();
+        createVAO();
+    }
+
+    void updatePolygon(const std::vector<Command>& commands)
+    {
+        makePolygon(commands);
+        createVAO();
+    }
+
     ShapeType   m_type;
     bool        m_cap;
     float       m_diameter;
+    float       m_length;
+    float       m_width;
+    std::shared_ptr<float> m_lengthPointer;
     int         m_count;
     glm::vec3   m_color;
-    glm::mat4   m_transformations;
+    std::shared_ptr<glm::mat4>   m_transformations;
     GLuint      m_VAO;
     MeshData    m_mesh;
     Mesh        m;
 
     bool        m_change;
+    std::string m_name;
+    std::shared_ptr<bool> m_useTexture;
+
+    float m_polyLength;
+    float m_polyAngle;
 };
+
+
 
 #endif //FINALYEARPROJECT_MESH_H

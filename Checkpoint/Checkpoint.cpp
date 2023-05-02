@@ -1,7 +1,3 @@
-//
-// Created by Theodora Vraimakis on 10/02/2023.
-//
-
 #include "Checkpoint.h"
 
 #include "glad/glad.h"

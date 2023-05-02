@@ -1,7 +1,3 @@
-//
-// Created by Theodora Vraimakis on 10/02/2023.
-//
-
 #ifndef FINALYEARPROJECT_ERROR_H
 #define FINALYEARPROJECT_ERROR_H
 

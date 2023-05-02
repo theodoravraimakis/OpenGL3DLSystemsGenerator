@@ -5,6 +5,10 @@
 #ifndef FINALYEARPROJECT_WINDOW_H
 #define FINALYEARPROJECT_WINDOW_H
 
+#include <string>
+#include <chrono>
+#include <iomanip>
+#include <sstream>
 
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
@@ -19,10 +23,12 @@ public:
     GLFWwindow* get();
     int nwidth, nheight;
     void resize();
-    int getWidth();
-    int getHeight();
+    bool m_darkMode;
 
-    void destroy();
+//    int getWidth();
+//    int getHeight();
+//
+//    void destroy();
 
     void clearScreen();
     bool isWindowClosed() const;
@@ -30,11 +36,13 @@ public:
     void processInput();
     void swapBuffers();
     void pollEvents();
-    float& getDeltaTime();
+    void takeScreenshot();
+    void setBackground(bool darkMode);
+//    float& getDeltaTime();
 
-    float currentFrame = 0.0f;
-    float deltaTime = 0.0f;	// time between current frame and last frame
-    float lastFrame = 0.0f;
+//    float currentFrame = 0.0f;
+//    float deltaTime = 0.0f;	// time between current frame and last frame
+//    float lastFrame = 0.0f;
 
 private:
 
