@@ -96,9 +96,6 @@ In L-systems we define these rotations using the following ```symbols``` (consta
 Which can be visualised as follows:<br>
 <img src="screenshots/rotations.png" width="300"><br>
 Where ```R_(δ)``` represents the 3D [rotation matrices](https://en.wikipedia.org/wiki/Rotation_matrix#In_three_dimensions).
-#### Context-Free L-systems
-#### Context-Sensitive L-systems
-#### Parametric L-systems
 
 ## Usage
 This project is a graphics 3D procedural generation tool created using OpenGL. 
@@ -175,8 +172,9 @@ Used L-systems productions sources: <sup id="a1">[1](#f1)</sup>, <sup id="a9">[9
 
 Inspiration for: 
 - some of the L-system classes were inspired by the implementation of the project: <sup id="a13">[13](#f1)</sup> <br>
-- some of the element in the Camera and Window classes were inspired by the implementation of the project: <sup id="a14">[14](#f1)</sup> <br>
-
+- some of the element in the ```Camera``` and ```Window``` classes were inspired by the implementation of the project: <sup id="a14">[14](#f1)</sup> <br>
+- the function ```getArcballVec``` taken from the tutorial: <sup id="a19">[20](#f1)</sup>
+- the function ```loadTexture``` were implemented using the tutorials:<sup id="a19">[21](#f1)</sup>
 
 External libraries:  ```ImGui```,  ```Glad``` and ```GLFW3``` (for project setup), ```GLM``` (for vector and matrix operations), ```STB``` (image processing).<br>
 Texture files: <sup id="a15">[15](#f1)</sup>, <sup id="a16">[16](#f1)</sup>, <sup id="a17">[17](#f1)</sup>, <sup id="a18">[18](#f1)</sup>.<br>
@@ -210,11 +208,13 @@ Font: ```Noto Sans``` <sup id="a19">[19](#f1)</sup>.
 <b id="f1">9</b> Prusinkiewicz, P., 1987. Applications of L-systems to computer imagery. In: Ehrig, H., Nagl, M., Rosenfeld, A. and Rozenberg, G. eds., Graph Grammars and Their Application to Computer Science; Third International Workshop. Springer-Verlag, Berlin, pp.534-548. doi: 10.1007/3-540-18405-5_40. [↩](#a9) <br>
 <b id="f1">10</b> Hogeweg, P. and Hesper, B., 1974. A model study on biomorphological description. Pattern Recognition, 6, pp.165-179. [↩](#a10) <br>
 <b id="f1">11</b> SideFX. (n.d.). L-System Node. Houdini Documentation. Retrieved April 8, 2023, from https://www.sidefx.com/docs/houdini/nodes/sop/lsystem.html. [↩](#a11) <br>
-<b id="f12">12</b> Bourke, P. (1991). L-System User Notes (Version 2.5). Retrieved from http://paulbourke.net/fractals/lsys/. ↩ <br>
-<b id="f13">13</b> Muhlich, J. (2021). Pomegranate. [GitHub repository]. GitHub. Retrieved from https://github.com/i-yam-jeremy/pomegranate/tree/d53ea831e8050801ba5bac828ff70e1c72b79903. ↩ <br>
-<b id="f14">14</b> SaferGo. (2021). CroissantVulkanRenderer [GitHub repository]. GitHub. Retrieved from https://github.com/SaferGo/CroissantVulkanRenderer/tree/main/src/CroissantRenderer. ↩ <br>
-<b id="f15">15</b> Zorak-Art. (n.d.). Stylized grass texture. Retrieved from https://skfb.ly/oyyGU. Licensed under CC Attribution-NonCommercial-NoDerivs 4.0 International (CC BY-NC-ND 4.0). ↩ <br>
-<b id="f16">16</b> Pixnio. (2023). Bark Texture Wood. Retrieved from https://pixnio.com/textures-and-patterns/tree-bark-cortex/bark-texture-wood. Licensed under Creative Commons Attribution-NonCommercial-ShareAlike 2.0 Generic (CC BY-NC-SA 2.0). ↩ <br>
-<b id="f17">17</b> Slater, K. (2023). Tree Bark Picture. Retrieved from https://commons.wikimedia.org/wiki/File:Tree_Bark_Picture.JPG. Licensed under Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0). ↩ <br>
-<b id="f18">18</b> Unknown. (2023). Free Texture Tree Bark (22820701). Retrieved from https://commons.wikimedia.org/wiki/File:Free_Texture_Tree_Bark_(22820701).jpeg. Licensed under Creative Commons Attribution 3.0 Unported (CC BY 3.0). ↩ <br>
-<b id="f19">19</b> Google. (2014). Noto Sans. Retrieved from https://www.google.com/get/noto/. Licensed under the SIL Open Font License, Version 1.1. ↩ <br>
+<b id="f12">12</b> Bourke, P. (1991). L-System User Notes (Version 2.5). Retrieved from http://paulbourke.net/fractals/lsys/. [↩](#a12) <br>
+<b id="f13">13</b> Muhlich, J. (2021). Pomegranate. [GitHub repository]. GitHub. Retrieved from https://github.com/i-yam-jeremy/pomegranate/tree/d53ea831e8050801ba5bac828ff70e1c72b79903. [↩](#a13)<br>
+<b id="f14">14</b> SaferGo. (2021). CroissantVulkanRenderer [GitHub repository]. GitHub. Retrieved from https://github.com/SaferGo/CroissantVulkanRenderer/tree/main/src/CroissantRenderer. [↩](#a14) <br>
+<b id="f15">15</b> Zorak-Art. (n.d.). Stylized grass texture. Retrieved from https://skfb.ly/oyyGU. Licensed under CC Attribution-NonCommercial-NoDerivs 4.0 International (CC BY-NC-ND 4.0). [↩](#a15) <br>
+<b id="f16">16</b> Pixnio. (2023). Bark Texture Wood. Retrieved from https://pixnio.com/textures-and-patterns/tree-bark-cortex/bark-texture-wood. Licensed under Creative Commons Attribution-NonCommercial-ShareAlike 2.0 Generic (CC BY-NC-SA 2.0). [↩](#a16) <br>
+<b id="f17">17</b> Slater, K. (2023). Tree Bark Picture. Retrieved from https://commons.wikimedia.org/wiki/File:Tree_Bark_Picture.JPG. Licensed under Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0). [↩](#a17) <br>
+<b id="f18">18</b> Unknown. (2023). Free Texture Tree Bark (22820701). Retrieved from https://commons.wikimedia.org/wiki/File:Free_Texture_Tree_Bark_(22820701).jpeg. Licensed under Creative Commons Attribution 3.0 Unported (CC BY 3.0). [↩](#a18) <br>
+<b id="f19">19</b> Google. (2014). Noto Sans. Retrieved from https://www.google.com/get/noto/. Licensed under the SIL Open Font License, Version 1.1. [↩](#a19) <br>
+<b id="f20">20</b> Wikibooks. (2021). OpenGL Programming/Modern OpenGL Tutorial Arcball. Retrieved April 30, 2023, from https://en.wikibooks.org/wiki/OpenGL_Programming/Modern_OpenGL_Tutorial_Arcball [↩](#a20) <br>
+<b id="f21">21</b> LearnOpenGL. (n.d.). Getting started/Textures. Retrieved April 30, 2023, from https://learnopengl.com/Getting-started/Textures [↩](#a21) <br>

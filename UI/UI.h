@@ -30,16 +30,12 @@ public:
             const std::shared_ptr<AllShapes> &allShapes,
             const std::shared_ptr<Shape> &shape,
             const std::shared_ptr<LSystem> &lsys
-//            const std::shared_ptr<Output> &output
     );
 
     ~UI();
 
-    static void imguiDemo();
     static bool isCursorOnUI();
     void userManual();
-//    bool isClicked();
-//    static bool clicked();
     static void imguiDestroy();
     void imguiDraw(const std::shared_ptr<Window> &window,
                     const std::shared_ptr<Camera> &camera,
@@ -47,7 +43,6 @@ public:
                    const std::shared_ptr<Light> &light,
                    const std::shared_ptr<AllShapes> &allShapes,
                    std::shared_ptr<LSystem>& lsys
-//                   std::shared_ptr<Output>& output
                     );
     static void imguiCamera(const std::shared_ptr<Camera> &camera,
                             const std::shared_ptr<LSystem> &lsys);
@@ -62,9 +57,6 @@ public:
            const std::shared_ptr<AllShapes> &allShapes
            );
 
-//    std::shared_ptr<Shape> m_cylinder=std::make_shared<Cylinder>();
-//    std::shared_ptr<Shape> m_cone=std::make_shared<Cone>();
-//    bool edited;
     std::shared_ptr<std::string> str = std::make_shared<std::string>("");
     std::shared_ptr<std::string> axiomString = std::make_shared<std::string>("");
     std::string y;
@@ -174,14 +166,11 @@ public:
     bool displayReminder;
     bool showManual;
     float availableWidth;
-//    bool m_changePopUp ;
-//    bool emptyStr;
     std::shared_ptr<AllShapes>                      m_allShapes;
-//    std::shared_ptr<Shape>                      m_shape;
     MeshData                                        m_loadedMesh;
     GLuint                                        m_loadedMeshVAO;
     std::string                                        m_loadedMeshName;
-    std::string current_item/* = shapes.front()*/;
+    std::string current_item;
     std::vector<std::string> shapes;
     ImFont* font;
 };

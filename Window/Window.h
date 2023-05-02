@@ -25,10 +25,6 @@ public:
     void resize();
     bool m_darkMode;
 
-//    int getWidth();
-//    int getHeight();
-//
-//    void destroy();
 
     void clearScreen();
     bool isWindowClosed() const;
@@ -36,19 +32,12 @@ public:
     void processInput();
     void swapBuffers();
     void pollEvents();
-    void takeScreenshot();
+    void takeScreenshot() const;
     void setBackground(bool darkMode);
-//    float& getDeltaTime();
-
-//    float currentFrame = 0.0f;
-//    float deltaTime = 0.0f;	// time between current frame and last frame
-//    float lastFrame = 0.0f;
 
 private:
 
-    // ImGui needs to access to non-const GLFWwindow.
     friend class UI;
-    friend class ArcballCamera;
     friend class Shader;
     GLFWwindow*  window;
 };

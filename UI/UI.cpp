@@ -135,10 +135,7 @@ void UI::imguiDraw(const std::shared_ptr<Window> &window,
         x(lsys, lsys->m_output, shape, allShapes);
 
         if(ImGui::TreeNode("Cylinder")) {
-//            shapeCap(
-//                    shape,
-//                    allShapes
-//            );
+
             changeColor(allShapes->m_cylinder);
             ImGui::TreePop();
             ImGui::Separator();
