@@ -15,29 +15,18 @@ Cone::Cone(
         : Shape(ShapeType::CONE) {
 
     m_cap = true;
-//    m_diameter = 1.0f;
     m_count = count;
-//    m_length = 5.0f; //TODO
     m_lengthPointer = std::make_shared<float>(length);
     m_color = color;
     m_transformations = std::make_shared<glm::mat4>(transformations);
     m_name = std::string("Cone");
     make();
-//    m_cap = cap;
-//    m_count = count;
-//    m_color = color;
-//    *m_transformations = transformations;
-//    m_changeType = m_type;
-//    m_change = m_cap;
-//    make();
 };
 Cone::Cone(): Shape {
         ShapeType::CONE}{
     m_name = std::string("Cone");
     createVAO();
     make();
-//    m_change = m_cap;
-//    make();
 };
 void Cone::make() {
     m_change = m_cap;
@@ -74,7 +63,6 @@ void Cone::make() {
         float u2 = (float)(i + 1) / (float)m_count;
         float v1 = 0.0f;
         float v2 = 1.0f;
-//
         if (m_useTexture) {
             texcoords.emplace_back(glm::vec2(u1, v1));
             texcoords.emplace_back(glm::vec2(u2, v1));
@@ -83,7 +71,6 @@ void Cone::make() {
             texcoords.emplace_back(glm::vec2(u2, v2));
             texcoords.emplace_back(glm::vec2(u1, v2));
         }
-        //Create cap of the Cone
         if (m_cap) {
             vertices.emplace_back(glm::vec3(0.f, y, z));
             vertices.emplace_back(glm::vec3(0.f, prevY, prevZ));

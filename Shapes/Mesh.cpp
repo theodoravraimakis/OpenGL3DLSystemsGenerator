@@ -59,7 +59,6 @@ void Shape::makePolygon(const std::vector<Command>& commands) {\
                     polygonStack.pop();
                     if (polygon.size() >= 3) {
                         for (size_t i = 2; i < polygon.size(); i++) {
-                            // Add vertices to mesh
                             vertices.emplace_back(polygon[0]);
                             vertices.emplace_back(polygon[i - 1]);
                             vertices.emplace_back(polygon[i]);
